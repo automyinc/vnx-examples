@@ -3,6 +3,7 @@
 #define VNX_EXAMPLES_INCLUDE_EXAMPLE_DATABASE_H_
 
 #include <example/DatabaseBase.hxx>
+#include <example/Table.hxx>
 #include <example/User.hxx>
 
 #include <vnx/Input.h>
@@ -11,8 +12,24 @@
 
 namespace example {
 
+/*
+ * The Database example shows how to use the request/response system.
+ * 
+ * Multiple clients from within the same process or from other processes can access the database.
+ * 
+ * Requests are processed first come first serve, interleaved with timer callbacks and receiving samples.
+ * 
+ * Since a module has its own thread we are writing single threaded code,
+ * just as if this module was a process with a main() function.
+ * 
+ * In this example we only implement one table called 'user' even though the interface allows for multiple tables.
+ */
 class Database : public DatabaseBase {
 public:
+	/*
+	 * Typically we do not want to hard-code a module name, hence we pass a name through
+	 * and let the user pick one when creating an instance.
+	 */
 	Database(const std::string& _vnx_name)
 		:	DatabaseBase(_vnx_name)
 	{
@@ -20,11 +37,13 @@ public:
 	
 protected:
 	
+	/*
+	 * The main() function will be called when the module is started in its own thread.
+	 */
 	void main() override {
 		
 		/*
-		 * First we load existing data into memory.
-		 * If no data found we create an empty table.
+		 * First we load existing data into memory. If no data found we create an empty table.
 		 */
 		user = vnx::read_from_file<Table>(root_path + "user.dat");
 		if(!user) {
@@ -54,16 +73,9 @@ protected:
 		save();				// save upon exit
 	}
 	
-	std::shared_ptr<const Table> get_table(const std::string& name) const override {
-		if(name == "user") {
-			return user;
-		}
-		throw std::runtime_error("table not found: '" + name + "'");
-	}
-	
-	void add_object(const std::string& table, const std::string& key, const std::shared_ptr<const Object>& object) override {
+	void add_object(const std::string& table, const std::shared_ptr<const Object>& object) override {
 		if(table == "user") {
-			user->objects[key] = vnx::clone(object);
+			user->objects[object->get_key()] = vnx::clone(object);
 		} else {
 			throw std::runtime_error("table not found: '" + table + "'");
 		}
@@ -76,9 +88,19 @@ protected:
 				return iter->second;
 			}
 			throw std::runtime_error("object not found: '" + key + "'");
-		} else {
-			throw std::runtime_error("table not found: '" + table + "'");
 		}
+		throw std::runtime_error("table not found: '" + table + "'");
+	}
+	
+	std::vector<std::shared_ptr<const Object>> get_all_objects(const std::string& table) const override {
+		if(table == "user") {
+			std::vector<std::shared_ptr<const Object>> result;
+			for(auto entry : user->objects) {
+				result.push_back(entry.second);
+			}
+			return result;
+		}
+		throw std::runtime_error("table not found: '" + table + "'");
 	}
 	
 	void delete_object(const std::string& table, const std::string& key) override {
@@ -106,7 +128,7 @@ protected:
 	void add_user_balance(const std::string& name, const float64_t& value) override {
 		auto iter = user->objects.find(name);
 		if(iter != user->objects.end()) {
-			get_user(name)->balance += value;
+			get_object<User>(user, name)->balance += value;
 		} else {
 			throw std::runtime_error("user not found: '" + name + "'");
 		}
@@ -115,7 +137,7 @@ protected:
 	float64_t get_user_balance(const std::string& name) const override {
 		auto iter = user->objects.find(name);
 		if(iter != user->objects.end()) {
-			return get_user(name)->balance;
+			return get_object<User>(user, name)->balance;
 		}
 		throw std::runtime_error("user not found: '" + name + "'");
 	}
@@ -123,7 +145,7 @@ protected:
 	void subtract_user_balance(const std::string& name, const float64_t& value) override {
 		auto iter = user->objects.find(name);
 		if(iter != user->objects.end()) {
-			get_user(name)->balance -= value;
+			get_object<User>(user, name)->balance -= value;
 		} else {
 			throw std::runtime_error("user not found: '" + name + "'");
 		}
@@ -138,16 +160,17 @@ protected:
 	}
 	
 private:
-	std::shared_ptr<User> get_user(const std::string& name) const {
-		auto iter = user->objects.find(name);
-		if(iter != user->objects.end()) {
-			std::shared_ptr<User> object = std::dynamic_pointer_cast<User>(iter->second);
+	template<typename T>
+	std::shared_ptr<T> get_object(std::shared_ptr<const Table> table, const std::string& key) const {
+		auto iter = table->objects.find(key);
+		if(iter != table->objects.end()) {
+			std::shared_ptr<T> object = std::dynamic_pointer_cast<T>(iter->second);
 			if(!object) {
-				throw std::runtime_error("internal error when accessing user: '" + name + "'");
+				throw std::runtime_error("internal error when accessing object: '" + key + "'");
 			}
 			return object;
 		}
-		throw std::runtime_error("user not found: '" + name + "'");
+		throw std::runtime_error("object not found: '" + key + "'");
 	}
 	
 private:

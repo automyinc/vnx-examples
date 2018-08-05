@@ -6,7 +6,6 @@
 
 #include <vnx/Client.h>
 #include <example/Object.hxx>
-#include <example/Table.hxx>
 #include <example/Transaction.hxx>
 #include <vnx/Module.h>
 #include <vnx/TopicPtr.h>
@@ -20,9 +19,9 @@ public:
 	
 	DatabaseClient(vnx::Hash64 service_addr);
 	
-	void add_object(const ::std::string& table, const ::std::string& key, const ::std::shared_ptr<const ::example::Object>& object);
+	void add_object(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object);
 	
-	void add_object_async(const ::std::string& table, const ::std::string& key, const ::std::shared_ptr<const ::example::Object>& object);
+	void add_object_async(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object);
 	
 	void add_user(const ::std::string& name);
 	
@@ -36,9 +35,9 @@ public:
 	
 	void delete_object_async(const ::std::string& table, const ::std::string& key);
 	
-	::std::shared_ptr<const ::example::Object> get_object(const ::std::string& table, const ::std::string& key);
+	::std::vector<::std::shared_ptr<const ::example::Object>> get_all_objects(const ::std::string& table);
 	
-	::std::shared_ptr<const ::example::Table> get_table(const ::std::string& name);
+	::std::shared_ptr<const ::example::Object> get_object(const ::std::string& table, const ::std::string& key);
 	
 	::float64_t get_user_balance(const ::std::string& name);
 	

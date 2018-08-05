@@ -6,7 +6,6 @@
 
 #include <example/package.hxx>
 #include <example/Object.hxx>
-#include <example/Table.hxx>
 #include <example/Transaction.hxx>
 #include <vnx/Module.h>
 #include <vnx/TopicPtr.h>
@@ -44,12 +43,12 @@ public:
 	static std::shared_ptr<vnx::TypeCode> create_type_code();
 	
 protected:
-	virtual void add_object(const ::std::string& table, const ::std::string& key, const ::std::shared_ptr<const ::example::Object>& object) = 0;
+	virtual void add_object(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object) = 0;
 	virtual void add_user(const ::std::string& name) = 0;
 	virtual void add_user_balance(const ::std::string& name, const ::float64_t& value) = 0;
 	virtual void delete_object(const ::std::string& table, const ::std::string& key) = 0;
+	virtual ::std::vector<::std::shared_ptr<const ::example::Object>> get_all_objects(const ::std::string& table) const = 0;
 	virtual ::std::shared_ptr<const ::example::Object> get_object(const ::std::string& table, const ::std::string& key) const = 0;
-	virtual ::std::shared_ptr<const ::example::Table> get_table(const ::std::string& name) const = 0;
 	virtual ::float64_t get_user_balance(const ::std::string& name) const = 0;
 	virtual void handle(std::shared_ptr<const ::example::Transaction> _value, std::shared_ptr<const vnx::Sample> _sample) { handle(_value); }
 	virtual void handle(std::shared_ptr<const ::example::Transaction> _value) {}

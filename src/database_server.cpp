@@ -6,16 +6,17 @@
 #include <vnx/Terminal.h>
 #include <vnx/Proxy.h>
 #include <vnx/Server.h>
-#include <vnx/UnixEndpoint.hxx>
 
 
 int main(int argc, char** argv) {
 	
 	std::map<std::string, std::string> options;
 	options["s"] = "source";
-	options["source"] = "url";
+	options["source"] = "source url";
+	options["n"] = "node";
+	options["node"] = "server url";
 	
-	vnx::init("database_main", argc, argv, options);
+	vnx::init("database_server", argc, argv, options);
 	
 	/*
 	 * A typical setup would be a router running on the local machine to which all processes connect.
@@ -24,8 +25,19 @@ int main(int argc, char** argv) {
 	std::string source = "/tmp/vnxrouter.sock";
 	vnx::read_config("source", source);
 	
+	/*
+	 * By default we create a local UNIX node for this example.
+	 */
+	std::string node = "/tmp/database_server.sock";
+	vnx::read_config("node", node);
+	
 	{
-		vnx::Handle<vnx::Server> server = new vnx::Server("Server", vnx::UnixEndpoint::create("/tmp/database_main.sock"));
+		vnx::Handle<vnx::Terminal> terminal = new vnx::Terminal("Terminal");
+		terminal.start_detached();
+	}
+	
+	{
+		vnx::Handle<vnx::Server> server = new vnx::Server("Server", vnx::Endpoint::from_url(node));
 		server.start_detached();
 	}
 	
@@ -40,13 +52,8 @@ int main(int argc, char** argv) {
 		module.start_detached();
 	}
 	
-	{
-		vnx::Handle<vnx::Terminal> terminal = new vnx::Terminal("Terminal");
-		terminal.start_detached();
-	}
-	
 	/*
-	 * Wait for shutdown signal and stopping of all modules.
+	 * Wait until shutdown.
 	 */
 	vnx::wait();
 	

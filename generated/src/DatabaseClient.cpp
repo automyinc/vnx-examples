@@ -19,24 +19,23 @@ DatabaseClient::DatabaseClient(vnx::Hash64 service_addr)
 {
 }
 
-void DatabaseClient::add_object(const ::std::string& table, const ::std::string& key, const ::std::shared_ptr<const ::example::Object>& object) {
+void DatabaseClient::add_object(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object) {
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
 	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x402669666f9d9f6dull));
 	{
 		vnx::write(_out, table, _type_code, _type_code->fields[0].code.data());
-		vnx::write(_out, key, _type_code, _type_code->fields[1].code.data());
-		vnx::write(_out, object, _type_code, _type_code->fields[2].code.data());
+		vnx::write(_out, object, _type_code, _type_code->fields[1].code.data());
 	}
 	_out.flush();
 	_argument_data->type_code = _type_code;
 	vnx_request(_argument_data);
 }
 
-void DatabaseClient::add_object_async(const ::std::string& table, const ::std::string& key, const ::std::shared_ptr<const ::example::Object>& object) {
+void DatabaseClient::add_object_async(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object) {
 	vnx_is_async = true;
-	add_object(table, key, object);
+	add_object(table, object);
 }
 
 void DatabaseClient::add_user(const ::std::string& name) {
@@ -96,6 +95,34 @@ void DatabaseClient::delete_object_async(const ::std::string& table, const ::std
 	delete_object(table, key);
 }
 
+::std::vector<::std::shared_ptr<const ::example::Object>> DatabaseClient::get_all_objects(const ::std::string& table) {
+	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
+	vnx::BinaryOutputStream _stream_out(_argument_data.get());
+	vnx::TypeOutput _out(&_stream_out);
+	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xa3ed8946d7f57e3cull));
+	{
+		vnx::write(_out, table, _type_code, _type_code->fields[0].code.data());
+	}
+	_out.flush();
+	_argument_data->type_code = _type_code;
+	vnx_request(_argument_data);
+	
+	vnx::BinaryInputStream _stream_in(vnx_return_data.get());
+	vnx::TypeInput _in(&_stream_in);
+	const vnx::TypeCode* _return_type = _type_code->return_type;
+	::std::vector<::std::shared_ptr<const ::example::Object>> _ret_0;
+	{
+		const char* const _buf = _in.read(_return_type->total_field_size);
+		for(const vnx::TypeField* _field : _return_type->ext_fields) {
+			switch(_field->native_index) {
+				case 0: vnx::read(_in, _ret_0, _return_type, _field->code.data()); break;
+				default: vnx::skip(_in, _return_type, _field->code.data());
+			}
+		}
+	}
+	return _ret_0;
+}
+
 ::std::shared_ptr<const ::example::Object> DatabaseClient::get_object(const ::std::string& table, const ::std::string& key) {
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
@@ -113,34 +140,6 @@ void DatabaseClient::delete_object_async(const ::std::string& table, const ::std
 	vnx::TypeInput _in(&_stream_in);
 	const vnx::TypeCode* _return_type = _type_code->return_type;
 	::std::shared_ptr<const ::example::Object> _ret_0;
-	{
-		const char* const _buf = _in.read(_return_type->total_field_size);
-		for(const vnx::TypeField* _field : _return_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, _ret_0, _return_type, _field->code.data()); break;
-				default: vnx::skip(_in, _return_type, _field->code.data());
-			}
-		}
-	}
-	return _ret_0;
-}
-
-::std::shared_ptr<const ::example::Table> DatabaseClient::get_table(const ::std::string& name) {
-	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
-	vnx::BinaryOutputStream _stream_out(_argument_data.get());
-	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x8f2e0d8cb71eed74ull));
-	{
-		vnx::write(_out, name, _type_code, _type_code->fields[0].code.data());
-	}
-	_out.flush();
-	_argument_data->type_code = _type_code;
-	vnx_request(_argument_data);
-	
-	vnx::BinaryInputStream _stream_in(vnx_return_data.get());
-	vnx::TypeInput _in(&_stream_in);
-	const vnx::TypeCode* _return_type = _type_code->return_type;
-	::std::shared_ptr<const ::example::Table> _ret_0;
 	{
 		const char* const _buf = _in.read(_return_type->total_field_size);
 		for(const vnx::TypeField* _field : _return_type->ext_fields) {

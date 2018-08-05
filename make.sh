@@ -1,10 +1,10 @@
 #!/bin/bash
 
-mkdir -p build/devel
+mkdir -p build
 
-cd build/devel
+cd build
 
-cmake -D CMAKE_CXX_FLAGS="-g -O3 -fmax-errors=1" ../../
+cmake -D CMAKE_CXX_FLAGS="-g -O3 -fmax-errors=1" ../
 
 make -j8 $@
 

@@ -6,4 +6,6 @@ class User extends Object {
 	
 	double balance;
 	
+	string get_key() const;
+	
 }

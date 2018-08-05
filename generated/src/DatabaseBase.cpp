@@ -95,7 +95,7 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.Database.add_object";
 		call_type->type_hash = vnx::Hash64(0x402669666f9d9f6dull);
-		call_type->code_hash = vnx::Hash64(0x32a6ad13650cec66ull);
+		call_type->code_hash = vnx::Hash64(0x99c975518d21c677ull);
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
 			return_type->name = "example.Database.add_object.return";
@@ -104,7 +104,7 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
 		}
-		call_type->fields.resize(3);
+		call_type->fields.resize(2);
 		{
 			vnx::TypeField& field = call_type->fields[0];
 			field.is_extended = true;
@@ -113,12 +113,6 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 		}
 		{
 			vnx::TypeField& field = call_type->fields[1];
-			field.is_extended = true;
-			field.name = "key";
-			field.code = {12, 5};
-		}
-		{
-			vnx::TypeField& field = call_type->fields[2];
 			field.is_extended = true;
 			field.name = "object";
 			field.code = {16};
@@ -208,6 +202,36 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 	}
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
+		call_type->name = "example.Database.get_all_objects";
+		call_type->type_hash = vnx::Hash64(0xa3ed8946d7f57e3cull);
+		call_type->code_hash = vnx::Hash64(0xda6f77882eda42d7ull);
+		{
+			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
+			return_type->name = "example.Database.get_all_objects.return";
+			return_type->type_hash = vnx::Hash64(0x74db12f7ef290f9eull);
+			return_type->code_hash = vnx::Hash64(0x45d54cf3deaa8698ull);
+			return_type->fields.resize(1);
+			{
+				vnx::TypeField& field = return_type->fields[0];
+				field.is_extended = true;
+				field.name = "_ret_0";
+				field.code = {12, 16};
+			}
+			return_type->build();
+			call_type->return_type = vnx::register_type_code(return_type);
+		}
+		call_type->fields.resize(1);
+		{
+			vnx::TypeField& field = call_type->fields[0];
+			field.is_extended = true;
+			field.name = "table";
+			field.code = {12, 5};
+		}
+		call_type->build();
+		type_code->methods[4] = vnx::register_type_code(call_type);
+	}
+	{
+		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.Database.get_object";
 		call_type->type_hash = vnx::Hash64(0xf137d848b885c70full);
 		call_type->code_hash = vnx::Hash64(0xd398a027b1aa2bb8ull);
@@ -237,36 +261,6 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			vnx::TypeField& field = call_type->fields[1];
 			field.is_extended = true;
 			field.name = "key";
-			field.code = {12, 5};
-		}
-		call_type->build();
-		type_code->methods[4] = vnx::register_type_code(call_type);
-	}
-	{
-		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "example.Database.get_table";
-		call_type->type_hash = vnx::Hash64(0x8f2e0d8cb71eed74ull);
-		call_type->code_hash = vnx::Hash64(0x845ef379ca316c43ull);
-		{
-			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "example.Database.get_table.return";
-			return_type->type_hash = vnx::Hash64(0x89607cfcd2b8c36dull);
-			return_type->code_hash = vnx::Hash64(0x3b7d45d1c7be89f7ull);
-			return_type->fields.resize(1);
-			{
-				vnx::TypeField& field = return_type->fields[0];
-				field.is_extended = true;
-				field.name = "_ret_0";
-				field.code = {16};
-			}
-			return_type->build();
-			call_type->return_type = vnx::register_type_code(return_type);
-		}
-		call_type->fields.resize(1);
-		{
-			vnx::TypeField& field = call_type->fields[0];
-			field.is_extended = true;
-			field.name = "name";
 			field.code = {12, 5};
 		}
 		call_type->build();
@@ -411,18 +405,16 @@ void DatabaseBase::handle_switch(std::shared_ptr<const vnx::Sample> _sample) {
 bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
 	if(_call_type->type_hash == vnx::Hash64(0x402669666f9d9f6dull)) {
 		::std::string table;
-		::std::string key;
 		::std::shared_ptr<const ::example::Object> object;
 		const char* const _buf = _in.read(_call_type->total_field_size);
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, table, _call_type, _field->code.data()); break;
-				case 1: vnx::read(_in, key, _call_type, _field->code.data()); break;
-				case 2: vnx::read(_in, object, _call_type, _field->code.data()); break;
+				case 1: vnx::read(_in, object, _call_type, _field->code.data()); break;
 				default: vnx::skip(_in, _call_type, _field->code.data());
 			}
 		}
-		add_object(table, key, object);
+		add_object(table, object);
 		return true;
 	} else if(_call_type->type_hash == vnx::Hash64(0x2741180fbb8f23a1ull)) {
 		::std::string name;
@@ -466,6 +458,21 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 		}
 		delete_object(table, key);
 		return true;
+	} else if(_call_type->type_hash == vnx::Hash64(0xa3ed8946d7f57e3cull)) {
+		::std::string table;
+		const char* const _buf = _in.read(_call_type->total_field_size);
+		for(const vnx::TypeField* _field : _call_type->ext_fields) {
+			switch(_field->native_index) {
+				case 0: vnx::read(_in, table, _call_type, _field->code.data()); break;
+				default: vnx::skip(_in, _call_type, _field->code.data());
+			}
+		}
+		::std::vector<::std::shared_ptr<const ::example::Object>> _ret_0;
+		_ret_0 = get_all_objects(table);
+		{
+			vnx::write(_out, _ret_0, _return_type, _return_type->fields[0].code.data());
+		}
+		return true;
 	} else if(_call_type->type_hash == vnx::Hash64(0xf137d848b885c70full)) {
 		::std::string table;
 		::std::string key;
@@ -479,21 +486,6 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 		}
 		::std::shared_ptr<const ::example::Object> _ret_0;
 		_ret_0 = get_object(table, key);
-		{
-			vnx::write(_out, _ret_0, _return_type, _return_type->fields[0].code.data());
-		}
-		return true;
-	} else if(_call_type->type_hash == vnx::Hash64(0x8f2e0d8cb71eed74ull)) {
-		::std::string name;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, name, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
-			}
-		}
-		::std::shared_ptr<const ::example::Table> _ret_0;
-		_ret_0 = get_table(name);
 		{
 			vnx::write(_out, _ret_0, _return_type, _return_type->fields[0].code.data());
 		}

@@ -6,6 +6,8 @@ file(GLOB GENERATED_SOURCE_FILES generated/src/*.cpp)
 add_library(example SHARED
 	${GENERATED_SOURCE_FILES}
 	src/LidarInfo.cpp
+	src/Object.cpp
+	src/User.cpp
 )
 
 target_include_directories(example
@@ -16,5 +18,5 @@ target_link_libraries(example
 	automy_basic automy_math vnx_base
 )
 
-add_executable(database_main src/database_main.cpp)
-target_link_libraries(database_main example)
+add_executable(database_server src/database_server.cpp)
+target_link_libraries(database_server example)

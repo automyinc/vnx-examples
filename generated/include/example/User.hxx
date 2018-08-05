@@ -24,6 +24,8 @@ public:
 	vnx::Hash64 get_type_hash() const;
 	const char* get_type_name() const;
 	
+	virtual ::std::string get_key() const;
+	
 	static std::shared_ptr<User> create();
 	std::shared_ptr<vnx::Value> clone() const;
 	
