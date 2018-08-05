@@ -1,0 +1,37 @@
+package example;
+
+module Database {
+	
+	string root_path = "data/";				// folder to store data
+	
+	vnx.TopicPtr transaction_topic;			// topic to listen on
+	
+	bool do_auto_save = true;				// if to periodically save data
+	
+	int auto_save_interval_ms = 1000;			// [ms]
+	
+	
+	const Table* get_table(string name) const;
+	
+	
+	void add_object(string table, string key, const Object* object);
+	
+	const Object* get_object(string table, string key) const;
+	
+	void delete_object(string table, string key);
+	
+	
+	void add_user(string name);
+	
+	double get_user_balance(string name) const;
+	
+	void add_user_balance(string name, double value);
+	
+	void subtract_user_balance(string name, double value);
+	
+	
+	void save();
+	
+	void handle(Transaction sample);
+	
+}

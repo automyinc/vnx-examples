@@ -1,0 +1,9 @@
+package example;
+
+class Table {
+	
+	string name;
+	
+	map<string, Object*> objects;
+	
+}

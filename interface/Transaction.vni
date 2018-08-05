@@ -1,0 +1,13 @@
+package example;
+
+class Transaction {
+	
+	transaction_type_e type;
+	
+	string from;
+	
+	string to;
+	
+	double amount;
+	
+}

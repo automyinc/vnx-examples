@@ -1,0 +1,7 @@
+package example;
+
+enum transaction_type_e {
+	
+	CREDIT, DEBIT, TRANSFER
+	
+}

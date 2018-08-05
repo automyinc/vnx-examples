@@ -1,0 +1,11 @@
+package example;
+
+class LidarPointCloud {
+	
+	long time;
+	
+	string frame;
+	
+	vector<lidar_point_t> points;
+	
+}

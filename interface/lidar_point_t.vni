@@ -1,0 +1,14 @@
+package example;
+
+import math.Vector3d;
+
+struct lidar_point_t {
+	
+	long time;
+	
+	Vector3d position;		// (x, y, z) [m]
+	
+	float distance;			// [m]
+	float intensity;		// [0 to 1]
+	
+}

@@ -1,0 +1,9 @@
+package example;
+
+class User extends Object {
+	
+	string name;
+	
+	double balance;
+	
+}

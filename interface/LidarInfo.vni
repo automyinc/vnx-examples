@@ -1,0 +1,13 @@
+package example;
+
+import math.Vector3d;
+
+class LidarInfo extends basic.Transform3D {
+	
+	Vector3d position;				// (x, y, z) [m]
+	
+	Vector3d rotation;				// intrinsic axis rotation (roll, pitch, yaw) [rad]
+	
+	void update();					// recompute matrix using position and rotation
+	
+}
