@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 project(example)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+
 file(GLOB GENERATED_SOURCE_FILES generated/src/*.cpp)
 
 add_library(example SHARED
