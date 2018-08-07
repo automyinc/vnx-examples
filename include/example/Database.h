@@ -164,7 +164,7 @@ private:
 	std::shared_ptr<T> get_object(std::shared_ptr<const Table> table, const std::string& key) const {
 		auto iter = table->objects.find(key);
 		if(iter != table->objects.end()) {
-			std::shared_ptr<T> object = std::dynamic_pointer_cast<T>(iter->second);
+			std::shared_ptr<T> object = std::dynamic_pointer_cast<T>(std::const_pointer_cast<Object>(iter->second));
 			if(!object) {
 				throw std::runtime_error("internal error when accessing object: '" + key + "'");
 			}

@@ -50,12 +50,12 @@ protected:
 	virtual ::std::vector<::std::shared_ptr<const ::example::Object>> get_all_objects(const ::std::string& table) const = 0;
 	virtual ::std::shared_ptr<const ::example::Object> get_object(const ::std::string& table, const ::std::string& key) const = 0;
 	virtual ::float64_t get_user_balance(const ::std::string& name) const = 0;
-	virtual void handle(std::shared_ptr<const ::example::Transaction> _value, std::shared_ptr<const vnx::Sample> _sample) { handle(_value); }
+	virtual void handle(std::shared_ptr<const ::example::Transaction> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
 	virtual void handle(std::shared_ptr<const ::example::Transaction> _value) {}
 	virtual void save() = 0;
 	virtual void subtract_user_balance(const ::std::string& name, const ::float64_t& value) = 0;
 	
-	void handle_switch(std::shared_ptr<const vnx::Sample> _sample);
+	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample);
 	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type);
 	
 };

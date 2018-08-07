@@ -11,11 +11,11 @@ module Database {
 	int auto_save_interval_ms = 1000;			// [ms]
 	
 	
-	void add_object(string table, const Object* object);
+	void add_object(string table, Object* object);
 	
-	const Object* get_object(string table, string key) const;
+	Object* get_object(string table, string key) const;
 	
-	vector<const Object*> get_all_objects(string table) const;
+	vector<Object*> get_all_objects(string table) const;
 	
 	void delete_object(string table, string key);
 	

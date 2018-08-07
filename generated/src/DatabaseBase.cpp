@@ -392,8 +392,8 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 	return type_code;
 }
 
-void DatabaseBase::handle_switch(std::shared_ptr<const vnx::Sample> _sample) {
-	uint64_t _type_hash = _sample->value->get_type_hash();
+void DatabaseBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
+	const uint64_t _type_hash = _sample->value->get_type_hash();
 	if(_type_hash == 0xcac4a4d10cff0323ull) {
 		std::shared_ptr<const example::Transaction> _value = std::dynamic_pointer_cast<const example::Transaction>(_sample->value);
 		if(_value) {

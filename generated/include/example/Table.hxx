@@ -15,7 +15,7 @@ class Table : public ::vnx::Value {
 public:
 	
 	::std::string name;
-	::std::map<::std::string, ::std::shared_ptr<::example::Object>> objects;
+	::std::map<::std::string, ::std::shared_ptr<const ::example::Object>> objects;
 	
 	typedef ::vnx::Value Super;
 	

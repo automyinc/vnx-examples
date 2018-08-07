@@ -74,8 +74,8 @@ std::shared_ptr<vnx::TypeCode> CameraSensorBase::create_type_code() {
 	return type_code;
 }
 
-void CameraSensorBase::handle_switch(std::shared_ptr<const vnx::Sample> _sample) {
-	uint64_t _type_hash = _sample->value->get_type_hash();
+void CameraSensorBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
+	const uint64_t _type_hash = _sample->value->get_type_hash();
 }
 
 bool CameraSensorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
