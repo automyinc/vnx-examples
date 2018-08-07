@@ -36,9 +36,6 @@ public:
 	Database(const std::string& _vnx_name)
 		:	DatabaseBase(_vnx_name)
 	{
-		/*
-		 * Configuration variables are loaded in the DatabaseBase() constructor call.
-		 */
 	}
 	
 	/*
@@ -52,6 +49,11 @@ protected:
 	 * The main() function will be called when the module is started in its own thread.
 	 */
 	void main() override {
+		
+		/*
+		 * Register ourselves as a service with our module name as service name.
+		 */
+		vnx::open_pipe(vnx_name, this);
 		
 		/*
 		 * First we load existing data into memory. If no data found we create an empty table.
@@ -150,7 +152,7 @@ protected:
 	
 	void add_user(const std::string& name) override {
 		if(user->objects.find(name) != user->objects.end()) {
-			throw std::runtime_error("user already exists: '" + name + "'");
+			return;
 		}
 		std::shared_ptr<User> object = User::create();
 		object->name = name;
@@ -198,7 +200,7 @@ private:
 		if(iter != table->objects.end()) {
 			/*
 			 * Here we have to const cast our pointer since VNI does not allow non-const pointers.
-			 * This is a special case, since we know the data is ours and no other thread has a pointer to it.
+			 * This is a special case, it's ok since we know the data is ours and no other thread has a pointer to it.
 			 */
 			std::shared_ptr<T> object = std::dynamic_pointer_cast<T>(std::const_pointer_cast<Object>(iter->second));
 			if(!object) {

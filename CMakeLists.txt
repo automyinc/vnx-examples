@@ -22,3 +22,5 @@ target_link_libraries(example
 
 add_executable(database_server src/database_server.cpp)
 target_link_libraries(database_server example)
+
+add_subdirectory(examples)
