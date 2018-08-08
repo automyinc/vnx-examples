@@ -23,4 +23,7 @@ target_link_libraries(example
 add_executable(database_server src/database_server.cpp)
 target_link_libraries(database_server example)
 
+add_executable(camera_sensor src/camera_sensor.cpp)
+target_link_libraries(camera_sensor example)
+
 add_subdirectory(examples)

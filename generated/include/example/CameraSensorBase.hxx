@@ -6,6 +6,7 @@
 
 #include <example/package.hxx>
 #include <vnx/Module.h>
+#include <vnx/TopicPtr.h>
 
 
 namespace example {
@@ -13,6 +14,10 @@ namespace example {
 class CameraSensorBase : public ::vnx::Module {
 public:
 	
+	::vnx::TopicPtr output;
+	::int32_t width = 2048;
+	::int32_t height = 1024;
+	::int32_t interval_ms = 20;
 	
 	typedef ::vnx::Module Super;
 	
