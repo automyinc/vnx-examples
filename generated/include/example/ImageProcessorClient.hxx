@@ -5,7 +5,9 @@
 #define INCLUDE_example_ImageProcessor_CLIENT_HXX_
 
 #include <vnx/Client.h>
+#include <basic/ImageFrame8.hxx>
 #include <vnx/Module.h>
+#include <vnx/TopicPtr.h>
 
 
 namespace example {
@@ -15,6 +17,10 @@ public:
 	ImageProcessorClient(const std::string& service_name);
 	
 	ImageProcessorClient(vnx::Hash64 service_addr);
+	
+	void handle(const ::std::shared_ptr<const ::basic::ImageFrame8>& sample);
+	
+	void handle_async(const ::std::shared_ptr<const ::basic::ImageFrame8>& sample);
 	
 };
 

@@ -2,6 +2,12 @@ package example;
 
 module ImageProcessor {
 	
+	vnx.TopicPtr input;
 	
+	vnx.TopicPtr output;
+	
+	float scale_factor = 1;
+	
+	void handle(basic.ImageFrame8 sample);
 	
 }

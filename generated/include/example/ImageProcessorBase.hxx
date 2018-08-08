@@ -5,7 +5,9 @@
 #define INCLUDE_example_ImageProcessorBase_HXX_
 
 #include <example/package.hxx>
+#include <basic/ImageFrame8.hxx>
 #include <vnx/Module.h>
+#include <vnx/TopicPtr.h>
 
 
 namespace example {
@@ -13,6 +15,9 @@ namespace example {
 class ImageProcessorBase : public ::vnx::Module {
 public:
 	
+	::vnx::TopicPtr input;
+	::vnx::TopicPtr output;
+	::float32_t scale_factor = 1;
 	
 	typedef ::vnx::Module Super;
 	
@@ -36,6 +41,8 @@ public:
 	static std::shared_ptr<vnx::TypeCode> create_type_code();
 	
 protected:
+	virtual void handle(std::shared_ptr<const ::basic::ImageFrame8> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
+	virtual void handle(std::shared_ptr<const ::basic::ImageFrame8> _value) {}
 	
 	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample);
 	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type);

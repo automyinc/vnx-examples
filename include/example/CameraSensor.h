@@ -26,7 +26,7 @@ protected:
 	/*
 	 * The main() function will be called when the module is started.
 	 */
-	void main() {
+	void main() override {
 		
 		// register a periodic callback to our update() function
 		set_timer_millis(interval_ms, std::bind(&CameraSensor::update, this));
@@ -50,9 +50,13 @@ protected:
 		out->time = vnx::get_time_micros();		// just use the current time
 		out->frame = vnx_name;					// use our module name as the coordinate frame
 		out->format = "MONO";					// just an example
-		out->image.resize(width, height);
+		out->properties["exposure"] = 123;		// just an example
 		
-		// just fill the image with random data
+		/*
+		 * In this example we fill the image with random lines of data.
+		 */
+		basic::Image8& dst = out->image;
+		dst.resize(width, height);
 		for(int y = 0; y < height; ++y) {
 			const int pixel = ::rand() % 256;
 			for(int x = 0; x < width; ++x) {
