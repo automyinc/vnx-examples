@@ -1,7 +1,14 @@
 package example;
 
+import vnx.TopicPtr;
+
 module LidarSensor {
 	
+	TopicPtr output;				// topic to publish on
 	
+	uint num_beams = 64;			// number of laser beams
+	uint num_angles = 1024;			// number of angles per rotation
+	
+	uint interval_ms = 100;			// scan interval
 	
 }

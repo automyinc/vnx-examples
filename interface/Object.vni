@@ -1,7 +1,0 @@
-package example;
-
-class Object {
-	
-	string get_key() const;
-	
-}

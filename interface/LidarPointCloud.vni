@@ -2,9 +2,9 @@ package example;
 
 class LidarPointCloud {
 	
-	long time;
+	long time;				// time stamp [usec]
 	
-	string frame;
+	string frame;			// coordinate frame
 	
 	vector<lidar_point_t> points;
 	

@@ -1,7 +1,16 @@
 package example;
 
+import vnx.TopicPtr;
+
 module LidarProcessor {
 	
+	TopicPtr input;				// topic to receive data on
 	
+	TopicPtr output;			// topic to publish on
+	
+	LidarInfo info;				// lidar calibration info
+	
+	
+	void handle(LidarPointCloud sample);
 	
 }

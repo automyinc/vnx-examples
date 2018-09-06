@@ -1,3 +1,3 @@
 
 add_executable(benchmark_request_response benchmark_request_response.cpp)
-target_link_libraries(benchmark_request_response example)
+target_link_libraries(benchmark_request_response vnx_example)

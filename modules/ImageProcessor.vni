@@ -1,12 +1,15 @@
 package example;
 
+import vnx.TopicPtr;
+
 module ImageProcessor {
 	
-	vnx.TopicPtr input;
+	TopicPtr input;					// topic to receive data on
 	
-	vnx.TopicPtr output;
+	TopicPtr output;				// topic to publish on
 	
-	float scale_factor = 1;
+	float scale_factor = 1;			// factor to convert from 8-bit to float
+	
 	
 	void handle(basic.ImageFrame8 sample);
 	

@@ -1,5 +1,5 @@
 
-#include <example/CameraSensor.h>
+#include <example/LidarSensor.h>
 
 #include <vnx/Config.h>
 #include <vnx/Process.h>
@@ -13,12 +13,12 @@ int main(int argc, char** argv) {
 	options["n"] = "node";
 	options["node"] = "server url";
 	
-	vnx::init("camera_sensor", argc, argv, options);
+	vnx::init("lidar_sensor", argc, argv, options);
 	
 	/*
 	 * By default we create a local UNIX node for this example.
 	 */
-	std::string node = "camera_sensor.sock";
+	std::string node = "lidar_sensor.sock";
 	vnx::read_config("node", node);
 	
 	{
@@ -42,11 +42,11 @@ int main(int argc, char** argv) {
 		/*
 		 * Create and start our sensor module.
 		 */
-		vnx::Handle<example::CameraSensor> module = new example::CameraSensor("Camera");
+		vnx::Handle<example::LidarSensor> module = new example::LidarSensor("Lidar");
 		
 		// Set configuration variables
 		if(!module->output) {
-			module->output = "sensors.raw_data.camera";		// set default output topic
+			module->output = "sensors.raw_data.lidar";		// set default output topic
 		}
 		
 		// Start module in the background

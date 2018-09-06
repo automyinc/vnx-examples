@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 	
 	{
 		/*
-		 * First we start a terminal to display log messages for us.
+		 * Start a Terminal to display log messages for us.
 		 */
 		vnx::Handle<vnx::Terminal> terminal = new vnx::Terminal("Terminal");
 		terminal.start_detached();
@@ -53,17 +53,32 @@ int main(int argc, char** argv) {
 		 * either through TCP or a UNIX domain socket.
 		 */
 		vnx::Handle<vnx::Proxy> proxy = new vnx::Proxy("Proxy", vnx::Endpoint::from_url(source));
+		
+		// Import default topic which is needed by ImageProcessor
+		proxy->import_list.push_back("sensors.raw_data.camera");
+		
 		proxy.start_detached();
 	}
 	
 	{
 		/*
-		 * Finally we create and start our processing module.
+		 * Create and start our processing module.
 		 */
-		vnx::Handle<example::ImageProcessor> module = new example::ImageProcessor("ImageProcessor_A");
+		vnx::Handle<example::ImageProcessor> module = new example::ImageProcessor("ImageProcessor");
+		
+		// Set configuration variables
+		if(!module->input && !module->output) {
+			module->input = "sensors.raw_data.camera";		// set default input topic
+			module->output = "vision.float_data.camera";	// set default output topic
+		}
+		
+		// Start module in the background
 		module.start_detached();
+		
 		/*
 		 * After the module has been started any attempt to access it will cause an exception.
+		 * 
+		 * For example: module->input = "something.else"; 	// throws exception
 		 */
 	}
 	

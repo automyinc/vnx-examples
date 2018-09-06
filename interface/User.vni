@@ -1,11 +1,9 @@
 package example;
 
-class User extends Object {
+class User {
 	
 	string name;
 	
 	double balance;
-	
-	string get_key() const;
 	
 }

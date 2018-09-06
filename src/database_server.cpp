@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 	
 	{
 		/*
-		 * First we start a terminal to display log messages for us.
+		 * Start a Terminal to display log messages for us.
 		 */
 		vnx::Handle<vnx::Terminal> terminal = new vnx::Terminal("Terminal");
 		terminal.start_detached();
@@ -40,16 +40,22 @@ int main(int argc, char** argv) {
 	
 	{
 		/*
-		 * Finally we create and start our database module.
+		 * Create a new instance of our Database module.
 		 */
 		vnx::Handle<example::Database> module = new example::Database("Database");
-		/*
-		 * Here we could override configuration variables if we wanted to.
-		 * For example: module->auto_save_interval_ms = 3000;
-		 */
+		
+		// Set configuration variables
+		if(!module->input) {
+			module->input = example::transactions;
+		}
+		
+		// Start module in the background
 		module.start_detached();
+		
 		/*
 		 * After the module has been started any attempt to access it will cause an exception.
+		 * 
+		 * For example: module->input = "something.else"; 	// throws exception
 		 */
 	}
 	

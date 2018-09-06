@@ -4,7 +4,7 @@ import math.Vector3d;
 
 struct lidar_point_t {
 	
-	long time;
+	long time;				// time stamp [usec]
 	
 	Vector3d position;		// (x, y, z) [m]
 	

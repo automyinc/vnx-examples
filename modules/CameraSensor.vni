@@ -1,12 +1,14 @@
 package example;
 
+import vnx.TopicPtr;
+
 module CameraSensor {
 	
-	vnx.TopicPtr output;			// topic to publish on
+	TopicPtr output;				// topic to publish on
 	
-	int width = 2048;				// image width
-	int height = 1024;				// image height
+	uint width = 2048;				// image width
+	uint height = 1024;				// image height
 	
-	int interval_ms = 20;			// frame interval
+	uint interval_ms = 100;			// frame interval
 	
 }
