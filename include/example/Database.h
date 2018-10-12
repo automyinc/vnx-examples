@@ -10,11 +10,11 @@ namespace example {
 /**
  * The Database example shows how to use the request/response system.
  * 
- * Multiple clients from within the same process or from other processes can access the database.
+ * Multiple clients from within the same process and/or from other processes can access the database.
  * 
  * Requests are processed first come first serve, interleaved with timer callbacks and processing of samples.
  * 
- * Since a module has its own thread we are writing single threaded code, as if this module was a process
+ * Since a module has its own thread we are writing single threaded code, as if a module is a normal process
  * with its own main() function.
  */
 class Database : public DatabaseBase {
@@ -74,6 +74,7 @@ protected:
 		if(iter != table.end()) {
 			return iter->second.balance;
 		} else {
+			// The exception will be caught in Super::main() and sent back to the client.
 			throw std::logic_error("Unknown user: " + name);
 		}
 	}
@@ -89,6 +90,8 @@ protected:
 	/**
 	 * The handle() function will be called from within Super::main() every time a
 	 * example::Transaction sample is received.
+	 * 
+	 * Be careful: Throwing an exception inside a handle() function will terminate the module.
 	 */
 	void handle(std::shared_ptr<const Transaction> sample) override {
 		switch(sample->type) {

@@ -1,5 +1,0 @@
-{
-	"input": "sensors.raw_data.camera_front_center",
-	"output": "vision.float_data.camera_front_center",
-	"scale_factor": 0.0039215
-}

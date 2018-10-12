@@ -6,13 +6,15 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 
 
 namespace example {
 
 
 const vnx::Hash64 Transaction::VNX_TYPE_HASH(0xcac4a4d10cff0323ull);
-const vnx::Hash64 Transaction::VNX_CODE_HASH(0x73d37227291af40ull);
+const vnx::Hash64 Transaction::VNX_CODE_HASH(0x617612d0ac95207full);
 
 vnx::Hash64 Transaction::get_type_hash() const {
 	return VNX_TYPE_HASH;
@@ -61,14 +63,37 @@ void Transaction::read(std::istream& _in) {
 	std::map<std::string, std::string> _object;
 	vnx::read_object(_in, _object);
 	for(const auto& _entry : _object) {
-		if(_entry.first == "type") {
-			vnx::from_string(_entry.second, type);
+		if(_entry.first == "amount") {
+			vnx::from_string(_entry.second, amount);
 		} else if(_entry.first == "from") {
 			vnx::from_string(_entry.second, from);
 		} else if(_entry.first == "to") {
 			vnx::from_string(_entry.second, to);
-		} else if(_entry.first == "amount") {
-			vnx::from_string(_entry.second, amount);
+		} else if(_entry.first == "type") {
+			vnx::from_string(_entry.second, type);
+		}
+	}
+}
+
+vnx::Object Transaction::to_object() const {
+	vnx::Object _object;
+	_object["type"] = type;
+	_object["from"] = from;
+	_object["to"] = to;
+	_object["amount"] = amount;
+	return _object;
+}
+
+void Transaction::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "amount") {
+			_entry.second.to(amount);
+		} else if(_entry.first == "from") {
+			_entry.second.to(from);
+		} else if(_entry.first == "to") {
+			_entry.second.to(to);
+		} else if(_entry.first == "type") {
+			_entry.second.to(type);
 		}
 	}
 }
@@ -95,7 +120,8 @@ std::shared_ptr<vnx::TypeCode> Transaction::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.Transaction";
 	type_code->type_hash = vnx::Hash64(0xcac4a4d10cff0323ull);
-	type_code->code_hash = vnx::Hash64(0x73d37227291af40ull);
+	type_code->code_hash = vnx::Hash64(0x617612d0ac95207full);
+	type_code->is_class = true;
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<Transaction>(); };
 	type_code->depends.resize(1);
 	type_code->depends[0] = ::example::transaction_type_e::get_type_code();
@@ -104,7 +130,7 @@ std::shared_ptr<vnx::TypeCode> Transaction::create_type_code() {
 		vnx::TypeField& field = type_code->fields[0];
 		field.is_extended = true;
 		field.name = "type";
-		field.code = {15, 0};
+		field.code = {19, 0};
 	}
 	{
 		vnx::TypeField& field = type_code->fields[1];
@@ -134,8 +160,15 @@ std::shared_ptr<vnx::TypeCode> Transaction::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::example::Transaction& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
 	{
@@ -155,14 +188,12 @@ void read(TypeInput& in, ::example::Transaction& value, const TypeCode* type_cod
 }
 
 void write(TypeOutput& out, const ::example::Transaction& value, const TypeCode* type_code, const uint16_t* code) {
-	if(!type_code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
 		type_code = vnx::write_type_code<::example::Transaction>(out);
 		vnx::write_class_header<::example::Transaction>(out);
-	} else {
-		type_code = type_code->depends[code[1]];
 	}
-	if(!type_code->is_native) {
-		throw std::logic_error("write(example::Transaction): type_code is not native");
+	if(code && code[0] == CODE_STRUCT) {
+		type_code = type_code->depends[code[1]];
 	}
 	char* const _buf = out.write(8);
 	vnx::write_value(_buf + 0, value.amount);

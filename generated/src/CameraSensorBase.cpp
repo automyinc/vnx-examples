@@ -6,6 +6,8 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 #include <vnx/Config.h>
 
 
@@ -13,15 +15,15 @@ namespace example {
 
 
 const vnx::Hash64 CameraSensorBase::VNX_TYPE_HASH(0x2201bbd3b25391ebull);
-const vnx::Hash64 CameraSensorBase::VNX_CODE_HASH(0x2ba55678245604a6ull);
+const vnx::Hash64 CameraSensorBase::VNX_CODE_HASH(0xb632f00cbbf2a585ull);
 
 CameraSensorBase::CameraSensorBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
 {
-	vnx::read_config(vnx_name + ".output", output);
-	vnx::read_config(vnx_name + ".width", width);
 	vnx::read_config(vnx_name + ".height", height);
 	vnx::read_config(vnx_name + ".interval_ms", interval_ms);
+	vnx::read_config(vnx_name + ".output", output);
+	vnx::read_config(vnx_name + ".width", width);
 }
 
 vnx::Hash64 CameraSensorBase::get_type_hash() const {
@@ -55,14 +57,37 @@ void CameraSensorBase::read(std::istream& _in) {
 	std::map<std::string, std::string> _object;
 	vnx::read_object(_in, _object);
 	for(const auto& _entry : _object) {
-		if(_entry.first == "output") {
-			vnx::from_string(_entry.second, output);
-		} else if(_entry.first == "width") {
-			vnx::from_string(_entry.second, width);
-		} else if(_entry.first == "height") {
+		if(_entry.first == "height") {
 			vnx::from_string(_entry.second, height);
 		} else if(_entry.first == "interval_ms") {
 			vnx::from_string(_entry.second, interval_ms);
+		} else if(_entry.first == "output") {
+			vnx::from_string(_entry.second, output);
+		} else if(_entry.first == "width") {
+			vnx::from_string(_entry.second, width);
+		}
+	}
+}
+
+vnx::Object CameraSensorBase::to_object() const {
+	vnx::Object _object;
+	_object["output"] = output;
+	_object["width"] = width;
+	_object["height"] = height;
+	_object["interval_ms"] = interval_ms;
+	return _object;
+}
+
+void CameraSensorBase::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "height") {
+			_entry.second.to(height);
+		} else if(_entry.first == "interval_ms") {
+			_entry.second.to(interval_ms);
+		} else if(_entry.first == "output") {
+			_entry.second.to(output);
+		} else if(_entry.first == "width") {
+			_entry.second.to(width);
 		}
 	}
 }
@@ -89,7 +114,7 @@ std::shared_ptr<vnx::TypeCode> CameraSensorBase::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.CameraSensor";
 	type_code->type_hash = vnx::Hash64(0x2201bbd3b25391ebull);
-	type_code->code_hash = vnx::Hash64(0x2ba55678245604a6ull);
+	type_code->code_hash = vnx::Hash64(0xb632f00cbbf2a585ull);
 	type_code->methods.resize(0);
 	type_code->fields.resize(4);
 	{
@@ -102,19 +127,19 @@ std::shared_ptr<vnx::TypeCode> CameraSensorBase::create_type_code() {
 		vnx::TypeField& field = type_code->fields[1];
 		field.name = "width";
 		field.value = vnx::to_string(2048);
-		field.code = {7};
+		field.code = {3};
 	}
 	{
 		vnx::TypeField& field = type_code->fields[2];
 		field.name = "height";
 		field.value = vnx::to_string(1024);
-		field.code = {7};
+		field.code = {3};
 	}
 	{
 		vnx::TypeField& field = type_code->fields[3];
 		field.name = "interval_ms";
-		field.value = vnx::to_string(20);
-		field.code = {7};
+		field.value = vnx::to_string(100);
+		field.code = {3};
 	}
 	type_code->build();
 	return type_code;
@@ -135,8 +160,15 @@ bool CameraSensorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, c
 namespace vnx {
 
 void read(TypeInput& in, ::example::CameraSensorBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
 	{
@@ -166,7 +198,11 @@ void read(TypeInput& in, ::example::CameraSensorBase& value, const TypeCode* typ
 }
 
 void write(TypeOutput& out, const ::example::CameraSensorBase& value, const TypeCode* type_code, const uint16_t* code) {
-	if(code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
+		type_code = vnx::write_type_code<::example::CameraSensorBase>(out);
+		vnx::write_class_header<::example::CameraSensorBase>(out);
+	}
+	if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
 	char* const _buf = out.write(12);

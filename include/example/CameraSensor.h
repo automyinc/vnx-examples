@@ -56,16 +56,10 @@ protected:
 		out->properties["sequence"] = ++sequence;
 		
 		/*
-		 * In this example we fill the image with random lines of data.
+		 * In this example we fill the image with random data, whatever happens to be in memory.
 		 */
 		basic::Image8& dst = out->image;
 		dst.resize(width, height);
-		for(int y = 0; y < height; ++y) {
-			const int pixel = ::rand() % 256;
-			for(int x = 0; x < width; ++x) {
-				out->image(x, y) = pixel;
-			}
-		}
 		
 		/*
 		 * We publish our sample value directly on topic 'output'. Directly means other modules
@@ -75,7 +69,7 @@ protected:
 		publish(out, output);
 		
 		/*
-		 * After publish() we can keep the sample value "out" but we may not modify it anymore since other threads
+		 * After publish() we can keep the sample value but we may not modify it anymore since other threads
 		 * could have and keep a pointer to the data forever.
 		 * 
 		 * For example: out->image.clear();		// can cause a segfault if another module is accessing the image

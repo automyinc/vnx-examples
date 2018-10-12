@@ -10,7 +10,7 @@
 namespace example {
 
 ImageProcessorClient::ImageProcessorClient(const std::string& service_name)
-	:	Client::Client(vnx::hash64(service_name))
+	:	Client::Client(vnx::Hash64(service_name))
 {
 }
 

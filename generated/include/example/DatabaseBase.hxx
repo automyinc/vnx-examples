@@ -5,8 +5,8 @@
 #define INCLUDE_example_DatabaseBase_HXX_
 
 #include <example/package.hxx>
-#include <example/Object.hxx>
 #include <example/Transaction.hxx>
+#include <example/User.hxx>
 #include <vnx/Module.h>
 #include <vnx/TopicPtr.h>
 
@@ -16,10 +16,7 @@ namespace example {
 class DatabaseBase : public ::vnx::Module {
 public:
 	
-	::std::string root_path = "data/";
-	::vnx::TopicPtr transaction_topic;
-	::bool_t do_auto_save = true;
-	::int32_t auto_save_interval_ms = 1000;
+	::vnx::TopicPtr input;
 	
 	typedef ::vnx::Module Super;
 	
@@ -36,6 +33,9 @@ public:
 	
 	void accept(vnx::Visitor& _visitor) const;
 	
+	vnx::Object to_object() const;
+	void from_object(const vnx::Object& object);
+	
 	friend std::ostream& operator<<(std::ostream& _out, const DatabaseBase& _value);
 	friend std::istream& operator>>(std::istream& _in, DatabaseBase& _value);
 	
@@ -43,17 +43,13 @@ public:
 	static std::shared_ptr<vnx::TypeCode> create_type_code();
 	
 protected:
-	virtual void add_object(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object) = 0;
 	virtual void add_user(const ::std::string& name) = 0;
-	virtual void add_user_balance(const ::std::string& name, const ::float64_t& value) = 0;
-	virtual void delete_object(const ::std::string& table, const ::std::string& key) = 0;
-	virtual ::std::vector<::std::shared_ptr<const ::example::Object>> get_all_objects(const ::std::string& table) const = 0;
-	virtual ::std::shared_ptr<const ::example::Object> get_object(const ::std::string& table, const ::std::string& key) const = 0;
-	virtual ::float64_t get_user_balance(const ::std::string& name) const = 0;
+	virtual void add_user_balance(const ::std::string& name, const ::vnx::float64_t& value) = 0;
+	virtual ::std::shared_ptr<const ::example::User> get_user(const ::std::string& name) const = 0;
+	virtual ::vnx::float64_t get_user_balance(const ::std::string& name) const = 0;
 	virtual void handle(std::shared_ptr<const ::example::Transaction> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
 	virtual void handle(std::shared_ptr<const ::example::Transaction> _value) {}
-	virtual void save() = 0;
-	virtual void subtract_user_balance(const ::std::string& name, const ::float64_t& value) = 0;
+	virtual void subtract_user_balance(const ::std::string& name, const ::vnx::float64_t& value) = 0;
 	
 	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample);
 	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type);

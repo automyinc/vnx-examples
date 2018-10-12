@@ -6,13 +6,15 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 
 
 namespace example {
 
 
 const vnx::Hash64 transaction_type_e::VNX_TYPE_HASH(0xcbdf8f90f7bbb940ull);
-const vnx::Hash64 transaction_type_e::VNX_CODE_HASH(0x4cccd552defba37eull);
+const vnx::Hash64 transaction_type_e::VNX_CODE_HASH(0x9622e85dd771acb1ull);
 
 vnx::Hash64 transaction_type_e::get_type_hash() const {
 	return VNX_TYPE_HASH;
@@ -20,6 +22,22 @@ vnx::Hash64 transaction_type_e::get_type_hash() const {
 
 const char* transaction_type_e::get_type_name() const {
 	return "example.transaction_type_e";
+}
+
+std::shared_ptr<transaction_type_e> transaction_type_e::create() {
+	return std::make_shared<transaction_type_e>();
+}
+
+std::shared_ptr<transaction_type_e> transaction_type_e::clone() const {
+	return std::make_shared<transaction_type_e>(*this);
+}
+
+void transaction_type_e::read(vnx::TypeInput& _in, const vnx::TypeCode* _type_code, const uint16_t* _code) {
+	vnx::read(_in, *this, _type_code, _code);
+}
+
+void transaction_type_e::write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const uint16_t* _code) const {
+	vnx::write(_out, *this, _type_code, _code);
 }
 
 void transaction_type_e::accept(vnx::Visitor& _visitor) const {
@@ -50,6 +68,20 @@ void transaction_type_e::read(std::istream& _in) {
 	else value = std::atoi(_name.c_str());
 }
 
+vnx::Object transaction_type_e::to_object() const {
+	vnx::Object _object;
+	_object["value"] = value;
+	return _object;
+}
+
+void transaction_type_e::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "value") {
+			_entry.second.to(value);
+		}
+	}
+}
+
 std::ostream& operator<<(std::ostream& _out, const transaction_type_e& _value) {
 	_value.write(_out);
 	return _out;
@@ -72,7 +104,9 @@ std::shared_ptr<vnx::TypeCode> transaction_type_e::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.transaction_type_e";
 	type_code->type_hash = vnx::Hash64(0xcbdf8f90f7bbb940ull);
-	type_code->code_hash = vnx::Hash64(0x4cccd552defba37eull);
+	type_code->code_hash = vnx::Hash64(0x9622e85dd771acb1ull);
+	type_code->is_enum = true;
+	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<vnx::Struct<transaction_type_e>>(); };
 	type_code->fields.resize(1);
 	{
 		vnx::TypeField& field = type_code->fields[0];
@@ -93,8 +127,15 @@ std::shared_ptr<vnx::TypeCode> transaction_type_e::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::example::transaction_type_e& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
 	{
@@ -111,7 +152,11 @@ void read(TypeInput& in, ::example::transaction_type_e& value, const TypeCode* t
 }
 
 void write(TypeOutput& out, const ::example::transaction_type_e& value, const TypeCode* type_code, const uint16_t* code) {
-	if(code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
+		type_code = vnx::write_type_code<::example::transaction_type_e>(out);
+		vnx::write_class_header<::example::transaction_type_e>(out);
+	}
+	if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
 	char* const _buf = out.write(4);

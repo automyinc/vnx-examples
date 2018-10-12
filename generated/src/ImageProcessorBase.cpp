@@ -6,6 +6,8 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 #include <vnx/Config.h>
 
 
@@ -13,7 +15,7 @@ namespace example {
 
 
 const vnx::Hash64 ImageProcessorBase::VNX_TYPE_HASH(0x212f42213adea73dull);
-const vnx::Hash64 ImageProcessorBase::VNX_CODE_HASH(0xc61b620101aacd48ull);
+const vnx::Hash64 ImageProcessorBase::VNX_CODE_HASH(0xba9f8378c7002733ull);
 
 ImageProcessorBase::ImageProcessorBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
@@ -62,6 +64,26 @@ void ImageProcessorBase::read(std::istream& _in) {
 	}
 }
 
+vnx::Object ImageProcessorBase::to_object() const {
+	vnx::Object _object;
+	_object["input"] = input;
+	_object["output"] = output;
+	_object["scale_factor"] = scale_factor;
+	return _object;
+}
+
+void ImageProcessorBase::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "input") {
+			_entry.second.to(input);
+		} else if(_entry.first == "output") {
+			_entry.second.to(output);
+		} else if(_entry.first == "scale_factor") {
+			_entry.second.to(scale_factor);
+		}
+	}
+}
+
 std::ostream& operator<<(std::ostream& _out, const ImageProcessorBase& _value) {
 	_value.write(_out);
 	return _out;
@@ -84,18 +106,20 @@ std::shared_ptr<vnx::TypeCode> ImageProcessorBase::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.ImageProcessor";
 	type_code->type_hash = vnx::Hash64(0x212f42213adea73dull);
-	type_code->code_hash = vnx::Hash64(0xc61b620101aacd48ull);
+	type_code->code_hash = vnx::Hash64(0xba9f8378c7002733ull);
 	type_code->methods.resize(1);
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.ImageProcessor.handle_basic_ImageFrame8";
 		call_type->type_hash = vnx::Hash64(0xa58d038b8530634cull);
-		call_type->code_hash = vnx::Hash64(0xbb58bf55645610eaull);
+		call_type->code_hash = vnx::Hash64(0xca9a8c84c6c530ddull);
+		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
 			return_type->name = "example.ImageProcessor.handle_basic_ImageFrame8.return";
 			return_type->type_hash = vnx::Hash64(0x7dd6718e11eb831bull);
 			return_type->code_hash = vnx::Hash64(0x520d3a60c1c3feacull);
+			return_type->is_return = true;
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
 		}
@@ -165,8 +189,15 @@ bool ImageProcessorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out,
 namespace vnx {
 
 void read(TypeInput& in, ::example::ImageProcessorBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
 	{
@@ -185,7 +216,11 @@ void read(TypeInput& in, ::example::ImageProcessorBase& value, const TypeCode* t
 }
 
 void write(TypeOutput& out, const ::example::ImageProcessorBase& value, const TypeCode* type_code, const uint16_t* code) {
-	if(code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
+		type_code = vnx::write_type_code<::example::ImageProcessorBase>(out);
+		vnx::write_class_header<::example::ImageProcessorBase>(out);
+	}
+	if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
 	char* const _buf = out.write(4);

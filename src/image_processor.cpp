@@ -11,8 +11,8 @@
 int main(int argc, char** argv) {
 	
 	std::map<std::string, std::string> options;
-	options["n"] = "node";
-	options["node"] = "server url";
+	options["n"] = "node";				// we declare -n is the same as --node
+	options["node"] = "server url";		// we declare --node means "server url"
 	options["s"] = "source";
 	options["source"] = "source url";
 	
@@ -29,6 +29,12 @@ int main(int argc, char** argv) {
 	 */
 	std::string source = "camera_sensor.sock";
 	vnx::read_config("source", source);
+	
+	/*
+	 * The Proxy will connect to a server, depending on the type of Endpoint
+	 * either through TCP or a UNIX domain socket.
+	 */
+	vnx::Handle<vnx::Proxy> proxy = new vnx::Proxy("Proxy", vnx::Endpoint::from_url(source));
 	
 	{
 		/*
@@ -49,28 +55,20 @@ int main(int argc, char** argv) {
 	
 	{
 		/*
-		 * The Proxy will connect to a server, depending on the type of Endpoint
-		 * either through TCP or a UNIX domain socket.
-		 */
-		vnx::Handle<vnx::Proxy> proxy = new vnx::Proxy("Proxy", vnx::Endpoint::from_url(source));
-		
-		// Import default topic which is needed by ImageProcessor
-		proxy->import_list.push_back("sensors.raw_data.camera");
-		
-		proxy.start_detached();
-	}
-	
-	{
-		/*
 		 * Create and start our processing module.
 		 */
 		vnx::Handle<example::ImageProcessor> module = new example::ImageProcessor("ImageProcessor");
 		
 		// Set configuration variables
-		if(!module->input && !module->output) {
+		if(!module->input) {
 			module->input = "sensors.raw_data.camera";		// set default input topic
+		}
+		if(!module->output) {
 			module->output = "vision.float_data.camera";	// set default output topic
 		}
+		
+		// Tell the Proxy to import our input topic
+		proxy->import_list.push_back(module->input->get_name());
 		
 		// Start module in the background
 		module.start_detached();
@@ -81,6 +79,11 @@ int main(int argc, char** argv) {
 		 * For example: module->input = "something.else"; 	// throws exception
 		 */
 	}
+	
+	/*
+	 * Finally start the Proxy after all topics have been configured.
+	 */
+	proxy.start_detached();
 	
 	/*
 	 * Wait until shutdown.

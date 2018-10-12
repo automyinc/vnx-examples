@@ -6,6 +6,8 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 #include <vnx/Config.h>
 
 
@@ -13,15 +15,12 @@ namespace example {
 
 
 const vnx::Hash64 DatabaseBase::VNX_TYPE_HASH(0x8d362075de8ee5efull);
-const vnx::Hash64 DatabaseBase::VNX_CODE_HASH(0x6eaac5c2e4a5905dull);
+const vnx::Hash64 DatabaseBase::VNX_CODE_HASH(0x3a9832bfc5d20720ull);
 
 DatabaseBase::DatabaseBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
 {
-	vnx::read_config(vnx_name + ".root_path", root_path);
-	vnx::read_config(vnx_name + ".transaction_topic", transaction_topic);
-	vnx::read_config(vnx_name + ".do_auto_save", do_auto_save);
-	vnx::read_config(vnx_name + ".auto_save_interval_ms", auto_save_interval_ms);
+	vnx::read_config(vnx_name + ".input", input);
 }
 
 vnx::Hash64 DatabaseBase::get_type_hash() const {
@@ -35,19 +34,13 @@ const char* DatabaseBase::get_type_name() const {
 void DatabaseBase::accept(vnx::Visitor& _visitor) const {
 	const vnx::TypeCode* _type_code = get_type_code();
 	_visitor.type_begin(*_type_code);
-	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, root_path);
-	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, transaction_topic);
-	_visitor.type_field(_type_code->fields[2], 2); vnx::accept(_visitor, do_auto_save);
-	_visitor.type_field(_type_code->fields[3], 3); vnx::accept(_visitor, auto_save_interval_ms);
+	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, input);
 	_visitor.type_end(*_type_code);
 }
 
 void DatabaseBase::write(std::ostream& _out) const {
 	_out << "{";
-	_out << "\"root_path\": "; vnx::write(_out, root_path);
-	_out << ", \"transaction_topic\": "; vnx::write(_out, transaction_topic);
-	_out << ", \"do_auto_save\": "; vnx::write(_out, do_auto_save);
-	_out << ", \"auto_save_interval_ms\": "; vnx::write(_out, auto_save_interval_ms);
+	_out << "\"input\": "; vnx::write(_out, input);
 	_out << "}";
 }
 
@@ -55,14 +48,22 @@ void DatabaseBase::read(std::istream& _in) {
 	std::map<std::string, std::string> _object;
 	vnx::read_object(_in, _object);
 	for(const auto& _entry : _object) {
-		if(_entry.first == "root_path") {
-			vnx::from_string(_entry.second, root_path);
-		} else if(_entry.first == "transaction_topic") {
-			vnx::from_string(_entry.second, transaction_topic);
-		} else if(_entry.first == "do_auto_save") {
-			vnx::from_string(_entry.second, do_auto_save);
-		} else if(_entry.first == "auto_save_interval_ms") {
-			vnx::from_string(_entry.second, auto_save_interval_ms);
+		if(_entry.first == "input") {
+			vnx::from_string(_entry.second, input);
+		}
+	}
+}
+
+vnx::Object DatabaseBase::to_object() const {
+	vnx::Object _object;
+	_object["input"] = input;
+	return _object;
+}
+
+void DatabaseBase::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "input") {
+			_entry.second.to(input);
 		}
 	}
 }
@@ -89,47 +90,20 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.Database";
 	type_code->type_hash = vnx::Hash64(0x8d362075de8ee5efull);
-	type_code->code_hash = vnx::Hash64(0x6eaac5c2e4a5905dull);
-	type_code->methods.resize(10);
-	{
-		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "example.Database.add_object";
-		call_type->type_hash = vnx::Hash64(0x402669666f9d9f6dull);
-		call_type->code_hash = vnx::Hash64(0x99c975518d21c677ull);
-		{
-			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "example.Database.add_object.return";
-			return_type->type_hash = vnx::Hash64(0x2b1ab9576ae50ad1ull);
-			return_type->code_hash = vnx::Hash64(0x2c75d0c154f00df3ull);
-			return_type->build();
-			call_type->return_type = vnx::register_type_code(return_type);
-		}
-		call_type->fields.resize(2);
-		{
-			vnx::TypeField& field = call_type->fields[0];
-			field.is_extended = true;
-			field.name = "table";
-			field.code = {12, 5};
-		}
-		{
-			vnx::TypeField& field = call_type->fields[1];
-			field.is_extended = true;
-			field.name = "object";
-			field.code = {16};
-		}
-		call_type->build();
-		type_code->methods[0] = vnx::register_type_code(call_type);
-	}
+	type_code->code_hash = vnx::Hash64(0x3a9832bfc5d20720ull);
+	type_code->methods.resize(6);
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.Database.add_user";
 		call_type->type_hash = vnx::Hash64(0x2741180fbb8f23a1ull);
-		call_type->code_hash = vnx::Hash64(0xfcafab1b8bac6dd2ull);
+		call_type->code_hash = vnx::Hash64(0x34b9325b4297690eull);
+		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
 			return_type->name = "example.Database.add_user.return";
 			return_type->type_hash = vnx::Hash64(0x73df74b7d405f6b0ull);
 			return_type->code_hash = vnx::Hash64(0x6b8c2257a0ee219cull);
+			return_type->is_return = true;
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
 		}
@@ -141,18 +115,20 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			field.code = {12, 5};
 		}
 		call_type->build();
-		type_code->methods[1] = vnx::register_type_code(call_type);
+		type_code->methods[0] = vnx::register_type_code(call_type);
 	}
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.Database.add_user_balance";
 		call_type->type_hash = vnx::Hash64(0x3d6e042d45e04326ull);
-		call_type->code_hash = vnx::Hash64(0x7ca7731545a387c6ull);
+		call_type->code_hash = vnx::Hash64(0x376338c76c60ba39ull);
+		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
 			return_type->name = "example.Database.add_user_balance.return";
 			return_type->type_hash = vnx::Hash64(0xce8eb9027f2289c3ull);
 			return_type->code_hash = vnx::Hash64(0xcc09df8379dcb0a3ull);
+			return_type->is_return = true;
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
 		}
@@ -169,77 +145,20 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			field.code = {10};
 		}
 		call_type->build();
-		type_code->methods[2] = vnx::register_type_code(call_type);
+		type_code->methods[1] = vnx::register_type_code(call_type);
 	}
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "example.Database.delete_object";
-		call_type->type_hash = vnx::Hash64(0xbefaa6c3eba7bb8cull);
-		call_type->code_hash = vnx::Hash64(0xeda81ce546dc397ull);
+		call_type->name = "example.Database.get_user";
+		call_type->type_hash = vnx::Hash64(0x3e6f70937269a136ull);
+		call_type->code_hash = vnx::Hash64(0xc95b2f4f5838f925ull);
+		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "example.Database.delete_object.return";
-			return_type->type_hash = vnx::Hash64(0xabde06228b1565cfull);
-			return_type->code_hash = vnx::Hash64(0x2ac01e8e0060d83bull);
-			return_type->build();
-			call_type->return_type = vnx::register_type_code(return_type);
-		}
-		call_type->fields.resize(2);
-		{
-			vnx::TypeField& field = call_type->fields[0];
-			field.is_extended = true;
-			field.name = "table";
-			field.code = {12, 5};
-		}
-		{
-			vnx::TypeField& field = call_type->fields[1];
-			field.is_extended = true;
-			field.name = "key";
-			field.code = {12, 5};
-		}
-		call_type->build();
-		type_code->methods[3] = vnx::register_type_code(call_type);
-	}
-	{
-		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "example.Database.get_all_objects";
-		call_type->type_hash = vnx::Hash64(0xa3ed8946d7f57e3cull);
-		call_type->code_hash = vnx::Hash64(0xda6f77882eda42d7ull);
-		{
-			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "example.Database.get_all_objects.return";
-			return_type->type_hash = vnx::Hash64(0x74db12f7ef290f9eull);
-			return_type->code_hash = vnx::Hash64(0x45d54cf3deaa8698ull);
-			return_type->fields.resize(1);
-			{
-				vnx::TypeField& field = return_type->fields[0];
-				field.is_extended = true;
-				field.name = "_ret_0";
-				field.code = {12, 16};
-			}
-			return_type->build();
-			call_type->return_type = vnx::register_type_code(return_type);
-		}
-		call_type->fields.resize(1);
-		{
-			vnx::TypeField& field = call_type->fields[0];
-			field.is_extended = true;
-			field.name = "table";
-			field.code = {12, 5};
-		}
-		call_type->build();
-		type_code->methods[4] = vnx::register_type_code(call_type);
-	}
-	{
-		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "example.Database.get_object";
-		call_type->type_hash = vnx::Hash64(0xf137d848b885c70full);
-		call_type->code_hash = vnx::Hash64(0xd398a027b1aa2bb8ull);
-		{
-			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "example.Database.get_object.return";
-			return_type->type_hash = vnx::Hash64(0x93a0c12f53b9edf7ull);
-			return_type->code_hash = vnx::Hash64(0xff54698c9ff841bull);
+			return_type->name = "example.Database.get_user.return";
+			return_type->type_hash = vnx::Hash64(0x36d19b92367474d9ull);
+			return_type->code_hash = vnx::Hash64(0x40cbb5f97573d661ull);
+			return_type->is_return = true;
 			return_type->fields.resize(1);
 			{
 				vnx::TypeField& field = return_type->fields[0];
@@ -250,32 +169,28 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
 		}
-		call_type->fields.resize(2);
+		call_type->fields.resize(1);
 		{
 			vnx::TypeField& field = call_type->fields[0];
 			field.is_extended = true;
-			field.name = "table";
-			field.code = {12, 5};
-		}
-		{
-			vnx::TypeField& field = call_type->fields[1];
-			field.is_extended = true;
-			field.name = "key";
+			field.name = "name";
 			field.code = {12, 5};
 		}
 		call_type->build();
-		type_code->methods[5] = vnx::register_type_code(call_type);
+		type_code->methods[2] = vnx::register_type_code(call_type);
 	}
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.Database.get_user_balance";
 		call_type->type_hash = vnx::Hash64(0xe625a8cfd51e9a9eull);
-		call_type->code_hash = vnx::Hash64(0x48e386b2a0c01d30ull);
+		call_type->code_hash = vnx::Hash64(0x80f51ff269fb19ecull);
+		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
 			return_type->name = "example.Database.get_user_balance.return";
 			return_type->type_hash = vnx::Hash64(0x50b361140a464af7ull);
-			return_type->code_hash = vnx::Hash64(0x2d199c5d17d41d93ull);
+			return_type->code_hash = vnx::Hash64(0x9d38cba9437ca6ccull);
+			return_type->is_return = true;
 			return_type->fields.resize(1);
 			{
 				vnx::TypeField& field = return_type->fields[0];
@@ -293,18 +208,20 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			field.code = {12, 5};
 		}
 		call_type->build();
-		type_code->methods[6] = vnx::register_type_code(call_type);
+		type_code->methods[3] = vnx::register_type_code(call_type);
 	}
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.Database.handle_example_Transaction";
 		call_type->type_hash = vnx::Hash64(0xa9a81442632b020eull);
-		call_type->code_hash = vnx::Hash64(0xbfc4ecdd24592b73ull);
+		call_type->code_hash = vnx::Hash64(0xce06df0c86ca0b44ull);
+		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
 			return_type->name = "example.Database.handle_example_Transaction.return";
 			return_type->type_hash = vnx::Hash64(0xa6ede797ad62d986ull);
 			return_type->code_hash = vnx::Hash64(0x3255fff283d23e37ull);
+			return_type->is_return = true;
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
 		}
@@ -316,34 +233,20 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			field.code = {16};
 		}
 		call_type->build();
-		type_code->methods[7] = vnx::register_type_code(call_type);
-	}
-	{
-		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "example.Database.save";
-		call_type->type_hash = vnx::Hash64(0x88d76f313d07d244ull);
-		call_type->code_hash = vnx::Hash64(0x90a679175a2cdd97ull);
-		{
-			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "example.Database.save.return";
-			return_type->type_hash = vnx::Hash64(0xdf1959aa793b4f55ull);
-			return_type->code_hash = vnx::Hash64(0x3d214a70bec99927ull);
-			return_type->build();
-			call_type->return_type = vnx::register_type_code(return_type);
-		}
-		call_type->build();
-		type_code->methods[8] = vnx::register_type_code(call_type);
+		type_code->methods[4] = vnx::register_type_code(call_type);
 	}
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
 		call_type->name = "example.Database.subtract_user_balance";
 		call_type->type_hash = vnx::Hash64(0xe58127da78610817ull);
-		call_type->code_hash = vnx::Hash64(0xacf8aa1dc4a76b81ull);
+		call_type->code_hash = vnx::Hash64(0xe73ce1cfed64567eull);
+		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
 			return_type->name = "example.Database.subtract_user_balance.return";
 			return_type->type_hash = vnx::Hash64(0x602e1ee9204ea132ull);
 			return_type->code_hash = vnx::Hash64(0x2e113be5a7c21c1aull);
+			return_type->is_return = true;
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
 		}
@@ -360,33 +263,14 @@ std::shared_ptr<vnx::TypeCode> DatabaseBase::create_type_code() {
 			field.code = {10};
 		}
 		call_type->build();
-		type_code->methods[9] = vnx::register_type_code(call_type);
+		type_code->methods[5] = vnx::register_type_code(call_type);
 	}
-	type_code->fields.resize(4);
+	type_code->fields.resize(1);
 	{
 		vnx::TypeField& field = type_code->fields[0];
 		field.is_extended = true;
-		field.name = "root_path";
-		field.value = vnx::to_string("data/");
+		field.name = "input";
 		field.code = {12, 5};
-	}
-	{
-		vnx::TypeField& field = type_code->fields[1];
-		field.is_extended = true;
-		field.name = "transaction_topic";
-		field.code = {12, 5};
-	}
-	{
-		vnx::TypeField& field = type_code->fields[2];
-		field.name = "do_auto_save";
-		field.value = vnx::to_string(true);
-		field.code = {1};
-	}
-	{
-		vnx::TypeField& field = type_code->fields[3];
-		field.name = "auto_save_interval_ms";
-		field.value = vnx::to_string(1000);
-		field.code = {7};
 	}
 	type_code->build();
 	return type_code;
@@ -403,20 +287,7 @@ void DatabaseBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
 }
 
 bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
-	if(_call_type->type_hash == vnx::Hash64(0x402669666f9d9f6dull)) {
-		::std::string table;
-		::std::shared_ptr<const ::example::Object> object;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, table, _call_type, _field->code.data()); break;
-				case 1: vnx::read(_in, object, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
-			}
-		}
-		add_object(table, object);
-		return true;
-	} else if(_call_type->type_hash == vnx::Hash64(0x2741180fbb8f23a1ull)) {
+	if(_call_type->type_hash == vnx::Hash64(0x2741180fbb8f23a1ull)) {
 		::std::string name;
 		const char* const _buf = _in.read(_call_type->total_field_size);
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
@@ -429,7 +300,7 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 		return true;
 	} else if(_call_type->type_hash == vnx::Hash64(0x3d6e042d45e04326ull)) {
 		::std::string name;
-		::float64_t value = 0;
+		::vnx::float64_t value = 0;
 		const char* const _buf = _in.read(_call_type->total_field_size);
 		{
 			const vnx::TypeField* const _field = _call_type->field_map[1];
@@ -445,47 +316,17 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 		}
 		add_user_balance(name, value);
 		return true;
-	} else if(_call_type->type_hash == vnx::Hash64(0xbefaa6c3eba7bb8cull)) {
-		::std::string table;
-		::std::string key;
+	} else if(_call_type->type_hash == vnx::Hash64(0x3e6f70937269a136ull)) {
+		::std::string name;
 		const char* const _buf = _in.read(_call_type->total_field_size);
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
-				case 0: vnx::read(_in, table, _call_type, _field->code.data()); break;
-				case 1: vnx::read(_in, key, _call_type, _field->code.data()); break;
+				case 0: vnx::read(_in, name, _call_type, _field->code.data()); break;
 				default: vnx::skip(_in, _call_type, _field->code.data());
 			}
 		}
-		delete_object(table, key);
-		return true;
-	} else if(_call_type->type_hash == vnx::Hash64(0xa3ed8946d7f57e3cull)) {
-		::std::string table;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, table, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
-			}
-		}
-		::std::vector<::std::shared_ptr<const ::example::Object>> _ret_0;
-		_ret_0 = get_all_objects(table);
-		{
-			vnx::write(_out, _ret_0, _return_type, _return_type->fields[0].code.data());
-		}
-		return true;
-	} else if(_call_type->type_hash == vnx::Hash64(0xf137d848b885c70full)) {
-		::std::string table;
-		::std::string key;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, table, _call_type, _field->code.data()); break;
-				case 1: vnx::read(_in, key, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
-			}
-		}
-		::std::shared_ptr<const ::example::Object> _ret_0;
-		_ret_0 = get_object(table, key);
+		::std::shared_ptr<const ::example::User> _ret_0;
+		_ret_0 = get_user(name);
 		{
 			vnx::write(_out, _ret_0, _return_type, _return_type->fields[0].code.data());
 		}
@@ -499,7 +340,7 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 				default: vnx::skip(_in, _call_type, _field->code.data());
 			}
 		}
-		::float64_t _ret_0 = 0;
+		::vnx::float64_t _ret_0 = 0;
 		_ret_0 = get_user_balance(name);
 		{
 			char* const _buf = _out.write(8);
@@ -517,18 +358,9 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 		}
 		handle(sample);
 		return true;
-	} else if(_call_type->type_hash == vnx::Hash64(0x88d76f313d07d244ull)) {
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				default: vnx::skip(_in, _call_type, _field->code.data());
-			}
-		}
-		save();
-		return true;
 	} else if(_call_type->type_hash == vnx::Hash64(0xe58127da78610817ull)) {
 		::std::string name;
-		::float64_t value = 0;
+		::vnx::float64_t value = 0;
 		const char* const _buf = _in.read(_call_type->total_field_size);
 		{
 			const vnx::TypeField* const _field = _call_type->field_map[1];
@@ -555,40 +387,34 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 namespace vnx {
 
 void read(TypeInput& in, ::example::DatabaseBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
-	{
-		const vnx::TypeField* const _field = type_code->field_map[2];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.do_auto_save, _field->code.data());
-		}
-	}
-	{
-		const vnx::TypeField* const _field = type_code->field_map[3];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.auto_save_interval_ms, _field->code.data());
-		}
-	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
-			case 0: vnx::read(in, value.root_path, type_code, _field->code.data()); break;
-			case 1: vnx::read(in, value.transaction_topic, type_code, _field->code.data()); break;
+			case 0: vnx::read(in, value.input, type_code, _field->code.data()); break;
 			default: vnx::skip(in, type_code, _field->code.data());
 		}
 	}
 }
 
 void write(TypeOutput& out, const ::example::DatabaseBase& value, const TypeCode* type_code, const uint16_t* code) {
-	if(code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
+		type_code = vnx::write_type_code<::example::DatabaseBase>(out);
+		vnx::write_class_header<::example::DatabaseBase>(out);
+	}
+	if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
-	char* const _buf = out.write(5);
-	vnx::write_value(_buf + 0, value.do_auto_save);
-	vnx::write_value(_buf + 1, value.auto_save_interval_ms);
-	vnx::write(out, value.root_path, type_code, type_code->fields[0].code.data());
-	vnx::write(out, value.transaction_topic, type_code, type_code->fields[1].code.data());
+	vnx::write(out, value.input, type_code, type_code->fields[0].code.data());
 }
 
 void read(std::istream& in, ::example::DatabaseBase& value) {

@@ -6,13 +6,15 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 
 
 namespace example {
 
 
 const vnx::Hash64 LidarInfo::VNX_TYPE_HASH(0x8d11d39b0f5a7b5cull);
-const vnx::Hash64 LidarInfo::VNX_CODE_HASH(0x4dd580598ca204d2ull);
+const vnx::Hash64 LidarInfo::VNX_CODE_HASH(0xed9be78dc9f1fb99ull);
 
 vnx::Hash64 LidarInfo::get_type_hash() const {
 	return VNX_TYPE_HASH;
@@ -61,14 +63,37 @@ void LidarInfo::read(std::istream& _in) {
 	std::map<std::string, std::string> _object;
 	vnx::read_object(_in, _object);
 	for(const auto& _entry : _object) {
-		if(_entry.first == "time") {
-			vnx::from_string(_entry.second, time);
-		} else if(_entry.first == "matrix") {
+		if(_entry.first == "matrix") {
 			vnx::from_string(_entry.second, matrix);
 		} else if(_entry.first == "position") {
 			vnx::from_string(_entry.second, position);
 		} else if(_entry.first == "rotation") {
 			vnx::from_string(_entry.second, rotation);
+		} else if(_entry.first == "time") {
+			vnx::from_string(_entry.second, time);
+		}
+	}
+}
+
+vnx::Object LidarInfo::to_object() const {
+	vnx::Object _object;
+	_object["time"] = time;
+	_object["matrix"] = matrix;
+	_object["position"] = position;
+	_object["rotation"] = rotation;
+	return _object;
+}
+
+void LidarInfo::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "matrix") {
+			_entry.second.to(matrix);
+		} else if(_entry.first == "position") {
+			_entry.second.to(position);
+		} else if(_entry.first == "rotation") {
+			_entry.second.to(rotation);
+		} else if(_entry.first == "time") {
+			_entry.second.to(time);
 		}
 	}
 }
@@ -95,7 +120,8 @@ std::shared_ptr<vnx::TypeCode> LidarInfo::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarInfo";
 	type_code->type_hash = vnx::Hash64(0x8d11d39b0f5a7b5cull);
-	type_code->code_hash = vnx::Hash64(0x4dd580598ca204d2ull);
+	type_code->code_hash = vnx::Hash64(0xed9be78dc9f1fb99ull);
+	type_code->is_class = true;
 	type_code->parents.resize(1);
 	type_code->parents[0] = ::basic::Transform3D::get_type_code();
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<LidarInfo>(); };
@@ -109,19 +135,19 @@ std::shared_ptr<vnx::TypeCode> LidarInfo::create_type_code() {
 		vnx::TypeField& field = type_code->fields[1];
 		field.is_extended = true;
 		field.name = "matrix";
-		field.code = {11, 16, 10};
+		field.code = {21, 2, 4, 4, 10};
 	}
 	{
 		vnx::TypeField& field = type_code->fields[2];
 		field.is_extended = true;
 		field.name = "position";
-		field.code = {11, 3, 10};
+		field.code = {21, 2, 3, 1, 10};
 	}
 	{
 		vnx::TypeField& field = type_code->fields[3];
 		field.is_extended = true;
 		field.name = "rotation";
-		field.code = {11, 3, 10};
+		field.code = {21, 2, 3, 1, 10};
 	}
 	type_code->build();
 	return type_code;
@@ -134,8 +160,15 @@ std::shared_ptr<vnx::TypeCode> LidarInfo::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::example::LidarInfo& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
 	{
@@ -155,14 +188,12 @@ void read(TypeInput& in, ::example::LidarInfo& value, const TypeCode* type_code,
 }
 
 void write(TypeOutput& out, const ::example::LidarInfo& value, const TypeCode* type_code, const uint16_t* code) {
-	if(!type_code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
 		type_code = vnx::write_type_code<::example::LidarInfo>(out);
 		vnx::write_class_header<::example::LidarInfo>(out);
-	} else {
-		type_code = type_code->depends[code[1]];
 	}
-	if(!type_code->is_native) {
-		throw std::logic_error("write(example::LidarInfo): type_code is not native");
+	if(code && code[0] == CODE_STRUCT) {
+		type_code = type_code->depends[code[1]];
 	}
 	char* const _buf = out.write(8);
 	vnx::write_value(_buf + 0, value.time);

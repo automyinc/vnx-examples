@@ -6,13 +6,15 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 
 
 namespace example {
 
 
 const vnx::Hash64 LidarPointCloud::VNX_TYPE_HASH(0x245fc412fc39f4acull);
-const vnx::Hash64 LidarPointCloud::VNX_CODE_HASH(0x6b1fe995288a582dull);
+const vnx::Hash64 LidarPointCloud::VNX_CODE_HASH(0x6c8672cb76a0da7eull);
 
 vnx::Hash64 LidarPointCloud::get_type_hash() const {
 	return VNX_TYPE_HASH;
@@ -59,12 +61,32 @@ void LidarPointCloud::read(std::istream& _in) {
 	std::map<std::string, std::string> _object;
 	vnx::read_object(_in, _object);
 	for(const auto& _entry : _object) {
-		if(_entry.first == "time") {
-			vnx::from_string(_entry.second, time);
-		} else if(_entry.first == "frame") {
+		if(_entry.first == "frame") {
 			vnx::from_string(_entry.second, frame);
 		} else if(_entry.first == "points") {
 			vnx::from_string(_entry.second, points);
+		} else if(_entry.first == "time") {
+			vnx::from_string(_entry.second, time);
+		}
+	}
+}
+
+vnx::Object LidarPointCloud::to_object() const {
+	vnx::Object _object;
+	_object["time"] = time;
+	_object["frame"] = frame;
+	_object["points"] = points;
+	return _object;
+}
+
+void LidarPointCloud::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "frame") {
+			_entry.second.to(frame);
+		} else if(_entry.first == "points") {
+			_entry.second.to(points);
+		} else if(_entry.first == "time") {
+			_entry.second.to(time);
 		}
 	}
 }
@@ -91,7 +113,8 @@ std::shared_ptr<vnx::TypeCode> LidarPointCloud::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarPointCloud";
 	type_code->type_hash = vnx::Hash64(0x245fc412fc39f4acull);
-	type_code->code_hash = vnx::Hash64(0x6b1fe995288a582dull);
+	type_code->code_hash = vnx::Hash64(0x6c8672cb76a0da7eull);
+	type_code->is_class = true;
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<LidarPointCloud>(); };
 	type_code->depends.resize(1);
 	type_code->depends[0] = ::example::lidar_point_t::get_type_code();
@@ -111,7 +134,7 @@ std::shared_ptr<vnx::TypeCode> LidarPointCloud::create_type_code() {
 		vnx::TypeField& field = type_code->fields[2];
 		field.is_extended = true;
 		field.name = "points";
-		field.code = {12, 15, 0};
+		field.code = {12, 19, 0};
 	}
 	type_code->build();
 	return type_code;
@@ -124,8 +147,15 @@ std::shared_ptr<vnx::TypeCode> LidarPointCloud::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::example::LidarPointCloud& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
 	{
@@ -144,14 +174,12 @@ void read(TypeInput& in, ::example::LidarPointCloud& value, const TypeCode* type
 }
 
 void write(TypeOutput& out, const ::example::LidarPointCloud& value, const TypeCode* type_code, const uint16_t* code) {
-	if(!type_code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
 		type_code = vnx::write_type_code<::example::LidarPointCloud>(out);
 		vnx::write_class_header<::example::LidarPointCloud>(out);
-	} else {
-		type_code = type_code->depends[code[1]];
 	}
-	if(!type_code->is_native) {
-		throw std::logic_error("write(example::LidarPointCloud): type_code is not native");
+	if(code && code[0] == CODE_STRUCT) {
+		type_code = type_code->depends[code[1]];
 	}
 	char* const _buf = out.write(8);
 	vnx::write_value(_buf + 0, value.time);

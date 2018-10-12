@@ -15,6 +15,9 @@ int main(int argc, char** argv) {
 	
 	vnx::init("benchmark_request_response", argc, argv, options);
 	
+	/*
+	 * By default we try to connect over a local UNIX socket.
+	 */
 	std::string node = "database_server.sock";
 	vnx::read_config("node", node);
 	
@@ -29,7 +32,7 @@ int main(int argc, char** argv) {
 		proxy.start_detached();
 	}
 	
-	// Create a client to our database
+	// Create a client to our database module called "Database"
 	example::DatabaseClient client("Database");
 	
 	try {

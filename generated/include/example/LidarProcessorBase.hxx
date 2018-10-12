@@ -5,7 +5,10 @@
 #define INCLUDE_example_LidarProcessorBase_HXX_
 
 #include <example/package.hxx>
+#include <example/LidarInfo.hxx>
+#include <example/LidarPointCloud.hxx>
 #include <vnx/Module.h>
+#include <vnx/TopicPtr.h>
 
 
 namespace example {
@@ -13,6 +16,9 @@ namespace example {
 class LidarProcessorBase : public ::vnx::Module {
 public:
 	
+	::vnx::TopicPtr input;
+	::vnx::TopicPtr output;
+	::example::LidarInfo info;
 	
 	typedef ::vnx::Module Super;
 	
@@ -29,6 +35,9 @@ public:
 	
 	void accept(vnx::Visitor& _visitor) const;
 	
+	vnx::Object to_object() const;
+	void from_object(const vnx::Object& object);
+	
 	friend std::ostream& operator<<(std::ostream& _out, const LidarProcessorBase& _value);
 	friend std::istream& operator>>(std::istream& _in, LidarProcessorBase& _value);
 	
@@ -36,6 +45,10 @@ public:
 	static std::shared_ptr<vnx::TypeCode> create_type_code();
 	
 protected:
+	virtual void handle(std::shared_ptr<const ::example::LidarInfo> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
+	virtual void handle(std::shared_ptr<const ::example::LidarInfo> _value) {}
+	virtual void handle(std::shared_ptr<const ::example::LidarPointCloud> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
+	virtual void handle(std::shared_ptr<const ::example::LidarPointCloud> _value) {}
 	
 	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample);
 	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type);

@@ -1,0 +1,7 @@
+{
+	"import_map": {
+		"lidar_sensor.sock": [
+			"sensors.raw_data"
+		]
+	}
+}

@@ -27,4 +27,10 @@ target_link_libraries(camera_sensor vnx_example)
 add_executable(image_processor src/image_processor.cpp)
 target_link_libraries(image_processor vnx_example)
 
+add_executable(lidar_sensor src/lidar_sensor.cpp)
+target_link_libraries(lidar_sensor vnx_example)
+
+add_executable(lidar_processor src/lidar_processor.cpp)
+target_link_libraries(lidar_processor vnx_example)
+
 add_subdirectory(examples)

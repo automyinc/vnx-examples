@@ -10,13 +10,49 @@
 namespace example {
 
 LidarProcessorClient::LidarProcessorClient(const std::string& service_name)
-	:	Client::Client(vnx::hash64(service_name))
+	:	Client::Client(vnx::Hash64(service_name))
 {
 }
 
 LidarProcessorClient::LidarProcessorClient(vnx::Hash64 service_addr)
 	:	Client::Client(service_addr)
 {
+}
+
+void LidarProcessorClient::handle(const ::std::shared_ptr<const ::example::LidarInfo>& sample) {
+	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
+	vnx::BinaryOutputStream _stream_out(_argument_data.get());
+	vnx::TypeOutput _out(&_stream_out);
+	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x3b1e2fc2a03761ceull));
+	{
+		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
+	}
+	_out.flush();
+	_argument_data->type_code = _type_code;
+	vnx_request(_argument_data);
+}
+
+void LidarProcessorClient::handle_async(const ::std::shared_ptr<const ::example::LidarInfo>& sample) {
+	vnx_is_async = true;
+	handle(sample);
+}
+
+void LidarProcessorClient::handle(const ::std::shared_ptr<const ::example::LidarPointCloud>& sample) {
+	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
+	vnx::BinaryOutputStream _stream_out(_argument_data.get());
+	vnx::TypeOutput _out(&_stream_out);
+	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x2998b50070ccccf6ull));
+	{
+		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
+	}
+	_out.flush();
+	_argument_data->type_code = _type_code;
+	vnx_request(_argument_data);
+}
+
+void LidarProcessorClient::handle_async(const ::std::shared_ptr<const ::example::LidarPointCloud>& sample) {
+	vnx_is_async = true;
+	handle(sample);
 }
 
 

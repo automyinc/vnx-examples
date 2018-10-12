@@ -6,13 +6,15 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 
 
 namespace example {
 
 
 const vnx::Hash64 User::VNX_TYPE_HASH(0x29f409d7512427eaull);
-const vnx::Hash64 User::VNX_CODE_HASH(0xf255230295a9e201ull);
+const vnx::Hash64 User::VNX_CODE_HASH(0xee1c9fbd329bbc95ull);
 
 vnx::Hash64 User::get_type_hash() const {
 	return VNX_TYPE_HASH;
@@ -57,10 +59,27 @@ void User::read(std::istream& _in) {
 	std::map<std::string, std::string> _object;
 	vnx::read_object(_in, _object);
 	for(const auto& _entry : _object) {
-		if(_entry.first == "name") {
-			vnx::from_string(_entry.second, name);
-		} else if(_entry.first == "balance") {
+		if(_entry.first == "balance") {
 			vnx::from_string(_entry.second, balance);
+		} else if(_entry.first == "name") {
+			vnx::from_string(_entry.second, name);
+		}
+	}
+}
+
+vnx::Object User::to_object() const {
+	vnx::Object _object;
+	_object["name"] = name;
+	_object["balance"] = balance;
+	return _object;
+}
+
+void User::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "balance") {
+			_entry.second.to(balance);
+		} else if(_entry.first == "name") {
+			_entry.second.to(name);
 		}
 	}
 }
@@ -87,9 +106,8 @@ std::shared_ptr<vnx::TypeCode> User::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.User";
 	type_code->type_hash = vnx::Hash64(0x29f409d7512427eaull);
-	type_code->code_hash = vnx::Hash64(0xf255230295a9e201ull);
-	type_code->parents.resize(1);
-	type_code->parents[0] = ::example::Object::get_type_code();
+	type_code->code_hash = vnx::Hash64(0xee1c9fbd329bbc95ull);
+	type_code->is_class = true;
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<User>(); };
 	type_code->fields.resize(2);
 	{
@@ -114,8 +132,15 @@ std::shared_ptr<vnx::TypeCode> User::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::example::User& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
 	{
@@ -133,14 +158,12 @@ void read(TypeInput& in, ::example::User& value, const TypeCode* type_code, cons
 }
 
 void write(TypeOutput& out, const ::example::User& value, const TypeCode* type_code, const uint16_t* code) {
-	if(!type_code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
 		type_code = vnx::write_type_code<::example::User>(out);
 		vnx::write_class_header<::example::User>(out);
-	} else {
-		type_code = type_code->depends[code[1]];
 	}
-	if(!type_code->is_native) {
-		throw std::logic_error("write(example::User): type_code is not native");
+	if(code && code[0] == CODE_STRUCT) {
+		type_code = type_code->depends[code[1]];
 	}
 	char* const _buf = out.write(8);
 	vnx::write_value(_buf + 0, value.balance);

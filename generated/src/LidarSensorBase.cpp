@@ -6,6 +6,8 @@
 #include <vnx/Input.h>
 #include <vnx/Output.h>
 #include <vnx/Visitor.h>
+#include <vnx/Object.h>
+#include <vnx/Struct.h>
 #include <vnx/Config.h>
 
 
@@ -13,11 +15,16 @@ namespace example {
 
 
 const vnx::Hash64 LidarSensorBase::VNX_TYPE_HASH(0x3c7f512f5e85fe65ull);
-const vnx::Hash64 LidarSensorBase::VNX_CODE_HASH(0xbaa8bae425542decull);
+const vnx::Hash64 LidarSensorBase::VNX_CODE_HASH(0x4e59514c49ebfaadull);
 
 LidarSensorBase::LidarSensorBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
 {
+	vnx::read_config(vnx_name + ".info", info);
+	vnx::read_config(vnx_name + ".interval_ms", interval_ms);
+	vnx::read_config(vnx_name + ".num_angles", num_angles);
+	vnx::read_config(vnx_name + ".num_beams", num_beams);
+	vnx::read_config(vnx_name + ".output", output);
 }
 
 vnx::Hash64 LidarSensorBase::get_type_hash() const {
@@ -31,11 +38,21 @@ const char* LidarSensorBase::get_type_name() const {
 void LidarSensorBase::accept(vnx::Visitor& _visitor) const {
 	const vnx::TypeCode* _type_code = get_type_code();
 	_visitor.type_begin(*_type_code);
+	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, output);
+	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, num_beams);
+	_visitor.type_field(_type_code->fields[2], 2); vnx::accept(_visitor, num_angles);
+	_visitor.type_field(_type_code->fields[3], 3); vnx::accept(_visitor, interval_ms);
+	_visitor.type_field(_type_code->fields[4], 4); vnx::accept(_visitor, info);
 	_visitor.type_end(*_type_code);
 }
 
 void LidarSensorBase::write(std::ostream& _out) const {
 	_out << "{";
+	_out << "\"output\": "; vnx::write(_out, output);
+	_out << ", \"num_beams\": "; vnx::write(_out, num_beams);
+	_out << ", \"num_angles\": "; vnx::write(_out, num_angles);
+	_out << ", \"interval_ms\": "; vnx::write(_out, interval_ms);
+	_out << ", \"info\": "; vnx::write(_out, info);
 	_out << "}";
 }
 
@@ -43,6 +60,43 @@ void LidarSensorBase::read(std::istream& _in) {
 	std::map<std::string, std::string> _object;
 	vnx::read_object(_in, _object);
 	for(const auto& _entry : _object) {
+		if(_entry.first == "info") {
+			vnx::from_string(_entry.second, info);
+		} else if(_entry.first == "interval_ms") {
+			vnx::from_string(_entry.second, interval_ms);
+		} else if(_entry.first == "num_angles") {
+			vnx::from_string(_entry.second, num_angles);
+		} else if(_entry.first == "num_beams") {
+			vnx::from_string(_entry.second, num_beams);
+		} else if(_entry.first == "output") {
+			vnx::from_string(_entry.second, output);
+		}
+	}
+}
+
+vnx::Object LidarSensorBase::to_object() const {
+	vnx::Object _object;
+	_object["output"] = output;
+	_object["num_beams"] = num_beams;
+	_object["num_angles"] = num_angles;
+	_object["interval_ms"] = interval_ms;
+	_object["info"] = info;
+	return _object;
+}
+
+void LidarSensorBase::from_object(const vnx::Object& _object) {
+	for(const auto& _entry : _object.field) {
+		if(_entry.first == "info") {
+			_entry.second.to(info);
+		} else if(_entry.first == "interval_ms") {
+			_entry.second.to(interval_ms);
+		} else if(_entry.first == "num_angles") {
+			_entry.second.to(num_angles);
+		} else if(_entry.first == "num_beams") {
+			_entry.second.to(num_beams);
+		} else if(_entry.first == "output") {
+			_entry.second.to(output);
+		}
 	}
 }
 
@@ -68,8 +122,41 @@ std::shared_ptr<vnx::TypeCode> LidarSensorBase::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarSensor";
 	type_code->type_hash = vnx::Hash64(0x3c7f512f5e85fe65ull);
-	type_code->code_hash = vnx::Hash64(0xbaa8bae425542decull);
+	type_code->code_hash = vnx::Hash64(0x4e59514c49ebfaadull);
+	type_code->depends.resize(1);
+	type_code->depends[0] = ::example::LidarInfo::get_type_code();
 	type_code->methods.resize(0);
+	type_code->fields.resize(5);
+	{
+		vnx::TypeField& field = type_code->fields[0];
+		field.is_extended = true;
+		field.name = "output";
+		field.code = {12, 5};
+	}
+	{
+		vnx::TypeField& field = type_code->fields[1];
+		field.name = "num_beams";
+		field.value = vnx::to_string(64);
+		field.code = {3};
+	}
+	{
+		vnx::TypeField& field = type_code->fields[2];
+		field.name = "num_angles";
+		field.value = vnx::to_string(1024);
+		field.code = {3};
+	}
+	{
+		vnx::TypeField& field = type_code->fields[3];
+		field.name = "interval_ms";
+		field.value = vnx::to_string(100);
+		field.code = {3};
+	}
+	{
+		vnx::TypeField& field = type_code->fields[4];
+		field.is_extended = true;
+		field.name = "info";
+		field.code = {19, 0};
+	}
 	type_code->build();
 	return type_code;
 }
@@ -89,21 +176,58 @@ bool LidarSensorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, co
 namespace vnx {
 
 void read(TypeInput& in, ::example::LidarSensorBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(!type_code) {
+		throw std::logic_error("read(): type_code == 0");
+	}
 	if(code) {
-		type_code = type_code->depends[code[1]];
+		switch(code[0]) {
+			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
+			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
+			default: vnx::skip(in, type_code, code); return;
+		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
+	{
+		const vnx::TypeField* const _field = type_code->field_map[1];
+		if(_field) {
+			vnx::read_value(_buf + _field->offset, value.num_beams, _field->code.data());
+		}
+	}
+	{
+		const vnx::TypeField* const _field = type_code->field_map[2];
+		if(_field) {
+			vnx::read_value(_buf + _field->offset, value.num_angles, _field->code.data());
+		}
+	}
+	{
+		const vnx::TypeField* const _field = type_code->field_map[3];
+		if(_field) {
+			vnx::read_value(_buf + _field->offset, value.interval_ms, _field->code.data());
+		}
+	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
+			case 0: vnx::read(in, value.output, type_code, _field->code.data()); break;
+			case 4: vnx::read(in, value.info, type_code, _field->code.data()); break;
 			default: vnx::skip(in, type_code, _field->code.data());
 		}
 	}
 }
 
 void write(TypeOutput& out, const ::example::LidarSensorBase& value, const TypeCode* type_code, const uint16_t* code) {
-	if(code) {
+	if(!type_code || (code && code[0] == CODE_ANY)) {
+		type_code = vnx::write_type_code<::example::LidarSensorBase>(out);
+		vnx::write_class_header<::example::LidarSensorBase>(out);
+	}
+	if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
+	char* const _buf = out.write(12);
+	vnx::write_value(_buf + 0, value.num_beams);
+	vnx::write_value(_buf + 4, value.num_angles);
+	vnx::write_value(_buf + 8, value.interval_ms);
+	vnx::write(out, value.output, type_code, type_code->fields[0].code.data());
+	vnx::write(out, value.info, type_code, type_code->fields[4].code.data());
 }
 
 void read(std::istream& in, ::example::LidarSensorBase& value) {

@@ -1,0 +1,5 @@
+{
+	"interval_ms": 1,
+	"num_angles": 1024,
+	"num_beams": 64
+}

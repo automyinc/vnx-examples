@@ -5,8 +5,8 @@
 #define INCLUDE_example_Database_CLIENT_HXX_
 
 #include <vnx/Client.h>
-#include <example/Object.hxx>
 #include <example/Transaction.hxx>
+#include <example/User.hxx>
 #include <vnx/Module.h>
 #include <vnx/TopicPtr.h>
 
@@ -19,39 +19,25 @@ public:
 	
 	DatabaseClient(vnx::Hash64 service_addr);
 	
-	void add_object(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object);
-	
-	void add_object_async(const ::std::string& table, const ::std::shared_ptr<const ::example::Object>& object);
-	
 	void add_user(const ::std::string& name);
 	
 	void add_user_async(const ::std::string& name);
 	
-	void add_user_balance(const ::std::string& name, const ::float64_t& value);
+	void add_user_balance(const ::std::string& name, const ::vnx::float64_t& value);
 	
-	void add_user_balance_async(const ::std::string& name, const ::float64_t& value);
+	void add_user_balance_async(const ::std::string& name, const ::vnx::float64_t& value);
 	
-	void delete_object(const ::std::string& table, const ::std::string& key);
+	::std::shared_ptr<const ::example::User> get_user(const ::std::string& name);
 	
-	void delete_object_async(const ::std::string& table, const ::std::string& key);
-	
-	::std::vector<::std::shared_ptr<const ::example::Object>> get_all_objects(const ::std::string& table);
-	
-	::std::shared_ptr<const ::example::Object> get_object(const ::std::string& table, const ::std::string& key);
-	
-	::float64_t get_user_balance(const ::std::string& name);
+	::vnx::float64_t get_user_balance(const ::std::string& name);
 	
 	void handle(const ::std::shared_ptr<const ::example::Transaction>& sample);
 	
 	void handle_async(const ::std::shared_ptr<const ::example::Transaction>& sample);
 	
-	void save();
+	void subtract_user_balance(const ::std::string& name, const ::vnx::float64_t& value);
 	
-	void save_async();
-	
-	void subtract_user_balance(const ::std::string& name, const ::float64_t& value);
-	
-	void subtract_user_balance_async(const ::std::string& name, const ::float64_t& value);
+	void subtract_user_balance_async(const ::std::string& name, const ::vnx::float64_t& value);
 	
 };
 

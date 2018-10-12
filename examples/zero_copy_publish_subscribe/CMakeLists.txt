@@ -1,0 +1,3 @@
+
+add_executable(zero_copy_publish_subscribe zero_copy_publish_subscribe.cpp)
+target_link_libraries(zero_copy_publish_subscribe vnx_example)

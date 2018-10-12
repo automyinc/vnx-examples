@@ -10,8 +10,8 @@
 int main(int argc, char** argv) {
 	
 	std::map<std::string, std::string> options;
-	options["n"] = "node";
-	options["node"] = "server url";
+	options["n"] = "node";				// we declare -n is the same as --node
+	options["node"] = "server url";		// we declare --node means "server url"
 	
 	vnx::init("lidar_sensor", argc, argv, options);
 	

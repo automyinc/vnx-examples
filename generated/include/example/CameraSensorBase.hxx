@@ -15,9 +15,9 @@ class CameraSensorBase : public ::vnx::Module {
 public:
 	
 	::vnx::TopicPtr output;
-	::int32_t width = 2048;
-	::int32_t height = 1024;
-	::int32_t interval_ms = 20;
+	::uint32_t width = 2048;
+	::uint32_t height = 1024;
+	::uint32_t interval_ms = 100;
 	
 	typedef ::vnx::Module Super;
 	
@@ -33,6 +33,9 @@ public:
 	void write(std::ostream& _out) const;
 	
 	void accept(vnx::Visitor& _visitor) const;
+	
+	vnx::Object to_object() const;
+	void from_object(const vnx::Object& object);
 	
 	friend std::ostream& operator<<(std::ostream& _out, const CameraSensorBase& _value);
 	friend std::istream& operator>>(std::istream& _in, CameraSensorBase& _value);

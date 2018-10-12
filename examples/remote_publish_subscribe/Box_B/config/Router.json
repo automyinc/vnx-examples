@@ -1,0 +1,8 @@
+{
+	"import_map": {
+		"Box_A": [
+			"vnx.time_sync",
+			"sensors.raw_data.lidar"
+		]
+	}
+}

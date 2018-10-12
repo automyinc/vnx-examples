@@ -5,7 +5,9 @@
 #define INCLUDE_example_LidarSensorBase_HXX_
 
 #include <example/package.hxx>
+#include <example/LidarInfo.hxx>
 #include <vnx/Module.h>
+#include <vnx/TopicPtr.h>
 
 
 namespace example {
@@ -13,6 +15,11 @@ namespace example {
 class LidarSensorBase : public ::vnx::Module {
 public:
 	
+	::vnx::TopicPtr output;
+	::uint32_t num_beams = 64;
+	::uint32_t num_angles = 1024;
+	::uint32_t interval_ms = 100;
+	::example::LidarInfo info;
 	
 	typedef ::vnx::Module Super;
 	
@@ -28,6 +35,9 @@ public:
 	void write(std::ostream& _out) const;
 	
 	void accept(vnx::Visitor& _visitor) const;
+	
+	vnx::Object to_object() const;
+	void from_object(const vnx::Object& object);
 	
 	friend std::ostream& operator<<(std::ostream& _out, const LidarSensorBase& _value);
 	friend std::istream& operator>>(std::istream& _in, LidarSensorBase& _value);

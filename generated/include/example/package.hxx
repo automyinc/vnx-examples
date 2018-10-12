@@ -8,6 +8,8 @@
 
 #include <math/package.hxx>
 
+#include <vnx/package.hxx>
+
 
 namespace example {
 
@@ -20,8 +22,6 @@ class LidarInfo;
 class LidarPointCloud;
 class LidarProcessorBase;
 class LidarSensorBase;
-class Object;
-class Table;
 class Transaction;
 class User;
 struct lidar_point_t;
@@ -39,8 +39,6 @@ void read(TypeInput& in, ::example::LidarInfo& value, const TypeCode* type_code,
 void read(TypeInput& in, ::example::LidarPointCloud& value, const TypeCode* type_code, const uint16_t* code);
 void read(TypeInput& in, ::example::LidarProcessorBase& value, const TypeCode* type_code, const uint16_t* code);
 void read(TypeInput& in, ::example::LidarSensorBase& value, const TypeCode* type_code, const uint16_t* code);
-void read(TypeInput& in, ::example::Object& value, const TypeCode* type_code, const uint16_t* code);
-void read(TypeInput& in, ::example::Table& value, const TypeCode* type_code, const uint16_t* code);
 void read(TypeInput& in, ::example::Transaction& value, const TypeCode* type_code, const uint16_t* code);
 void read(TypeInput& in, ::example::User& value, const TypeCode* type_code, const uint16_t* code);
 void read(TypeInput& in, ::example::lidar_point_t& value, const TypeCode* type_code, const uint16_t* code);
@@ -53,8 +51,6 @@ void write(TypeOutput& out, const ::example::LidarInfo& value, const TypeCode* t
 void write(TypeOutput& out, const ::example::LidarPointCloud& value, const TypeCode* type_code, const uint16_t* code);
 void write(TypeOutput& out, const ::example::LidarProcessorBase& value, const TypeCode* type_code, const uint16_t* code);
 void write(TypeOutput& out, const ::example::LidarSensorBase& value, const TypeCode* type_code, const uint16_t* code);
-void write(TypeOutput& out, const ::example::Object& value, const TypeCode* type_code, const uint16_t* code);
-void write(TypeOutput& out, const ::example::Table& value, const TypeCode* type_code, const uint16_t* code);
 void write(TypeOutput& out, const ::example::Transaction& value, const TypeCode* type_code, const uint16_t* code);
 void write(TypeOutput& out, const ::example::User& value, const TypeCode* type_code, const uint16_t* code);
 void write(TypeOutput& out, const ::example::lidar_point_t& value, const TypeCode* type_code, const uint16_t* code);
@@ -67,8 +63,6 @@ void read(std::istream& in, ::example::LidarInfo& value);
 void read(std::istream& in, ::example::LidarPointCloud& value);
 void read(std::istream& in, ::example::LidarProcessorBase& value);
 void read(std::istream& in, ::example::LidarSensorBase& value);
-void read(std::istream& in, ::example::Object& value);
-void read(std::istream& in, ::example::Table& value);
 void read(std::istream& in, ::example::Transaction& value);
 void read(std::istream& in, ::example::User& value);
 void read(std::istream& in, ::example::lidar_point_t& value);
@@ -81,8 +75,6 @@ void write(std::ostream& out, const ::example::LidarInfo& value);
 void write(std::ostream& out, const ::example::LidarPointCloud& value);
 void write(std::ostream& out, const ::example::LidarProcessorBase& value);
 void write(std::ostream& out, const ::example::LidarSensorBase& value);
-void write(std::ostream& out, const ::example::Object& value);
-void write(std::ostream& out, const ::example::Table& value);
 void write(std::ostream& out, const ::example::Transaction& value);
 void write(std::ostream& out, const ::example::User& value);
 void write(std::ostream& out, const ::example::lidar_point_t& value);
@@ -95,8 +87,6 @@ void accept(Visitor& visitor, const ::example::LidarInfo& value);
 void accept(Visitor& visitor, const ::example::LidarPointCloud& value);
 void accept(Visitor& visitor, const ::example::LidarProcessorBase& value);
 void accept(Visitor& visitor, const ::example::LidarSensorBase& value);
-void accept(Visitor& visitor, const ::example::Object& value);
-void accept(Visitor& visitor, const ::example::Table& value);
 void accept(Visitor& visitor, const ::example::Transaction& value);
 void accept(Visitor& visitor, const ::example::User& value);
 void accept(Visitor& visitor, const ::example::lidar_point_t& value);
@@ -119,6 +109,9 @@ struct type<::example::CameraSensorBase> {
 	void accept(Visitor& visitor, const ::example::CameraSensorBase& value) {
 		vnx::accept(visitor, value);
 	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
 };
 
 template<>
@@ -137,6 +130,9 @@ struct type<::example::DatabaseBase> {
 	}
 	void accept(Visitor& visitor, const ::example::DatabaseBase& value) {
 		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
 	}
 };
 
@@ -157,6 +153,9 @@ struct type<::example::ImageProcessorBase> {
 	void accept(Visitor& visitor, const ::example::ImageProcessorBase& value) {
 		vnx::accept(visitor, value);
 	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
 };
 
 template<>
@@ -175,6 +174,9 @@ struct type<::example::LidarInfo> {
 	}
 	void accept(Visitor& visitor, const ::example::LidarInfo& value) {
 		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
 	}
 };
 
@@ -195,6 +197,9 @@ struct type<::example::LidarPointCloud> {
 	void accept(Visitor& visitor, const ::example::LidarPointCloud& value) {
 		vnx::accept(visitor, value);
 	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
 };
 
 template<>
@@ -213,6 +218,9 @@ struct type<::example::LidarProcessorBase> {
 	}
 	void accept(Visitor& visitor, const ::example::LidarProcessorBase& value) {
 		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
 	}
 };
 
@@ -233,43 +241,8 @@ struct type<::example::LidarSensorBase> {
 	void accept(Visitor& visitor, const ::example::LidarSensorBase& value) {
 		vnx::accept(visitor, value);
 	}
-};
-
-template<>
-struct type<::example::Object> {
-	void read(TypeInput& in, ::example::Object& value, const TypeCode* type_code, const uint16_t* code) {
-		vnx::read(in, value, type_code, code);
-	}
-	void write(TypeOutput& out, const ::example::Object& value, const TypeCode* type_code, const uint16_t* code) {
-		vnx::write(out, value, type_code, code);
-	}
-	void read(std::istream& in, ::example::Object& value) {
-		vnx::read(in, value);
-	}
-	void write(std::ostream& out, const ::example::Object& value) {
-		vnx::write(out, value);
-	}
-	void accept(Visitor& visitor, const ::example::Object& value) {
-		vnx::accept(visitor, value);
-	}
-};
-
-template<>
-struct type<::example::Table> {
-	void read(TypeInput& in, ::example::Table& value, const TypeCode* type_code, const uint16_t* code) {
-		vnx::read(in, value, type_code, code);
-	}
-	void write(TypeOutput& out, const ::example::Table& value, const TypeCode* type_code, const uint16_t* code) {
-		vnx::write(out, value, type_code, code);
-	}
-	void read(std::istream& in, ::example::Table& value) {
-		vnx::read(in, value);
-	}
-	void write(std::ostream& out, const ::example::Table& value) {
-		vnx::write(out, value);
-	}
-	void accept(Visitor& visitor, const ::example::Table& value) {
-		vnx::accept(visitor, value);
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
 	}
 };
 
@@ -290,6 +263,9 @@ struct type<::example::Transaction> {
 	void accept(Visitor& visitor, const ::example::Transaction& value) {
 		vnx::accept(visitor, value);
 	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
 };
 
 template<>
@@ -308,6 +284,9 @@ struct type<::example::User> {
 	}
 	void accept(Visitor& visitor, const ::example::User& value) {
 		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
 	}
 };
 
@@ -328,6 +307,9 @@ struct type<::example::lidar_point_t> {
 	void accept(Visitor& visitor, const ::example::lidar_point_t& value) {
 		vnx::accept(visitor, value);
 	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
 };
 
 template<>
@@ -346,6 +328,9 @@ struct type<::example::transaction_type_e> {
 	}
 	void accept(Visitor& visitor, const ::example::transaction_type_e& value) {
 		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
 	}
 };
 

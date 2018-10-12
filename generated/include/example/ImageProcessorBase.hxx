@@ -17,7 +17,7 @@ public:
 	
 	::vnx::TopicPtr input;
 	::vnx::TopicPtr output;
-	::float32_t scale_factor = 1;
+	::vnx::float32_t scale_factor = 1;
 	
 	typedef ::vnx::Module Super;
 	
@@ -33,6 +33,9 @@ public:
 	void write(std::ostream& _out) const;
 	
 	void accept(vnx::Visitor& _visitor) const;
+	
+	vnx::Object to_object() const;
+	void from_object(const vnx::Object& object);
 	
 	friend std::ostream& operator<<(std::ostream& _out, const ImageProcessorBase& _value);
 	friend std::istream& operator>>(std::istream& _in, ImageProcessorBase& _value);

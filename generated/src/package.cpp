@@ -10,12 +10,11 @@
 #include <example/LidarPointCloud.hxx>
 #include <example/LidarProcessorBase.hxx>
 #include <example/LidarSensorBase.hxx>
-#include <example/Object.hxx>
-#include <example/Table.hxx>
 #include <example/Transaction.hxx>
 #include <example/User.hxx>
 #include <example/lidar_point_t.hxx>
 #include <example/transaction_type_e.hxx>
+
 
 
 namespace example {
@@ -30,8 +29,6 @@ static void register_all_types() {
 	vnx::register_type_code(example::LidarPointCloud::create_type_code());
 	vnx::register_type_code(example::LidarProcessorBase::create_type_code());
 	vnx::register_type_code(example::LidarSensorBase::create_type_code());
-	vnx::register_type_code(example::Object::create_type_code());
-	vnx::register_type_code(example::Table::create_type_code());
 	vnx::register_type_code(example::Transaction::create_type_code());
 	vnx::register_type_code(example::User::create_type_code());
 	vnx::register_type_code(example::lidar_point_t::create_type_code());

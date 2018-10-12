@@ -5,7 +5,10 @@
 #define INCLUDE_example_LidarProcessor_CLIENT_HXX_
 
 #include <vnx/Client.h>
+#include <example/LidarInfo.hxx>
+#include <example/LidarPointCloud.hxx>
 #include <vnx/Module.h>
+#include <vnx/TopicPtr.h>
 
 
 namespace example {
@@ -15,6 +18,14 @@ public:
 	LidarProcessorClient(const std::string& service_name);
 	
 	LidarProcessorClient(vnx::Hash64 service_addr);
+	
+	void handle(const ::std::shared_ptr<const ::example::LidarInfo>& sample);
+	
+	void handle_async(const ::std::shared_ptr<const ::example::LidarInfo>& sample);
+	
+	void handle(const ::std::shared_ptr<const ::example::LidarPointCloud>& sample);
+	
+	void handle_async(const ::std::shared_ptr<const ::example::LidarPointCloud>& sample);
 	
 };
 

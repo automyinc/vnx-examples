@@ -17,7 +17,7 @@ public:
 	::example::transaction_type_e type;
 	::std::string from;
 	::std::string to;
-	::float64_t amount = 0;
+	::vnx::float64_t amount = 0;
 	
 	typedef ::vnx::Value Super;
 	
@@ -37,6 +37,9 @@ public:
 	void write(std::ostream& _out) const;
 	
 	void accept(vnx::Visitor& _visitor) const;
+	
+	vnx::Object to_object() const;
+	void from_object(const vnx::Object& object);
 	
 	friend std::ostream& operator<<(std::ostream& _out, const Transaction& _value);
 	friend std::istream& operator>>(std::istream& _in, Transaction& _value);

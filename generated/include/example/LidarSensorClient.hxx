@@ -5,7 +5,9 @@
 #define INCLUDE_example_LidarSensor_CLIENT_HXX_
 
 #include <vnx/Client.h>
+#include <example/LidarInfo.hxx>
 #include <vnx/Module.h>
+#include <vnx/TopicPtr.h>
 
 
 namespace example {
