@@ -70,7 +70,7 @@ protected:
 			publish(out, output);
 			
 		} else {
-			// just ignore the data until we get a LidarInfo sample
+			// Just ignore the data until we get a LidarInfo sample
 		}
 	}
 	
@@ -82,7 +82,7 @@ protected:
 		info = value;	// we simply store the value
 	}
 	
-	/*
+	/**
 	 * This function will be called once a second from within Super::main(). 
 	 */
 	void print_stats() {

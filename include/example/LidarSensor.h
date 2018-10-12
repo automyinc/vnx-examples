@@ -84,7 +84,7 @@ protected:
 		publish(info, output);
 	}
 	
-	/*
+	/**
 	 * This function will be called once a second from within Super::main(). 
 	 */
 	void print_stats() {

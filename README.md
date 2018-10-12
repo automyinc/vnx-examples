@@ -1,4 +1,8 @@
 
+## Dependencies
+
+vnx-base, automy-basic, automy-math
+
 ## How to compile
 
 `$ ./make.sh`

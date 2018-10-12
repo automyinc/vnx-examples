@@ -23,7 +23,7 @@ which is (by default) configured to listen on ".vnxrouter.sock" as well as on th
 
 `Box_B$ ./build/lidar_processor -s .vnxrouter.sock`
 
-vnxrouter on Box_B is configured to connect to Box_B's vnxrouter on the default port 4444 and subscribe to "sensors.raw_data.lidar".
+vnxrouter on Box_B is configured to connect to Box_A's vnxrouter on the default port 4444 and subscribe to "sensors.raw_data.lidar".
 
 Now we could start another lidar_processor on Box_B and it will get the same data from vnxrouter, avoiding
 a duplicate network load which would be the case if we connected directly to lidar_sensor over TCP.

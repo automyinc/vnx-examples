@@ -58,8 +58,7 @@ protected:
 		/*
 		 * In this example we fill the image with random data, whatever happens to be in memory.
 		 */
-		basic::Image8& dst = out->image;
-		dst.resize(width, height);
+		out->image.resize(width, height);
 		
 		/*
 		 * We publish our sample value directly on topic 'output'. Directly means other modules
