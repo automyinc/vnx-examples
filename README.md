@@ -21,44 +21,44 @@ vnx-base, automy-basic, automy-math
 
 ## VNI class
 
-- [LidarInfo](interface/LidarInfo.vni)
-- [LidarPointCloud](interface/LidarPointCloud.vni)
-- [Transaction](interface/Transaction.vni)
-- [User](interface/User.vni)
+- [LidarInfo.vni](interface/LidarInfo.vni)
+- [LidarPointCloud.vni](interface/LidarPointCloud.vni)
+- [Transaction.vni](interface/Transaction.vni)
+- [User.vni](interface/User.vni)
 
 ## VNI struct
 
-- [lidar_point_t](interface/lidar_point_t.vni)
+- [lidar_point_t.vni](interface/lidar_point_t.vni)
 
 ## VNI enum
 
-- [transaction_type_e](interface/transaction_type_e.vni)
+- [transaction_type_e.vni](interface/transaction_type_e.vni)
 
 ## VNI package
 
-- [package](interface/package.vni)
+- [package.vni](interface/package.vni)
 
 ## VNI module
 
-- [CameraSensor](modules/CameraSensor.vni)
-- [Database](modules/Database.vni)
-- [ImageProcessor](modules/ImageProcessor.vni)
-- [LidarProcessor](modules/LidarProcessor.vni)
-- [LidarSensor](modules/LidarSensor.vni)
+- [CameraSensor.vni](modules/CameraSensor.vni)
+- [Database.vni](modules/Database.vni)
+- [ImageProcessor.vni](modules/ImageProcessor.vni)
+- [LidarProcessor.vni](modules/LidarProcessor.vni)
+- [LidarSensor.vni](modules/LidarSensor.vni)
 
 ## C++ Module
 
-- [CameraSensor](include/example/CameraSensor.h)
-- [Database](include/example/Database.h)
-- [ImageProcessor](include/example/ImageProcessor.h)
-- [LidarProcessor](include/example/LidarProcessor.h)
-- [LidarSensor](include/example/LidarSensor.h)
+- [CameraSensor.h](include/example/CameraSensor.h)
+- [Database.h](include/example/Database.h)
+- [ImageProcessor.h](include/example/ImageProcessor.h)
+- [LidarProcessor.h](include/example/LidarProcessor.h)
+- [LidarSensor.h](include/example/LidarSensor.h)
 
 ## C++ Process
 
-- [camera_sensor](src/camera_sensor.cpp)
-- [lidar_sensor](src/lidar_sensor.cpp)
-- [database_server](src/database_server.cpp)
-- [image_processor](src/image_processor.cpp)
-- [lidar_processor](src/lidar_processor.cpp)
+- [camera_sensor.cpp](src/camera_sensor.cpp)
+- [lidar_sensor.cpp](src/lidar_sensor.cpp)
+- [database_server.cpp](src/database_server.cpp)
+- [image_processor.cpp](src/image_processor.cpp)
+- [lidar_processor.cpp](src/lidar_processor.cpp)
 
