@@ -8,7 +8,7 @@ file(GLOB GENERATED_SOURCE_FILES generated/src/*.cpp)
 add_library(vnx_example SHARED
 	${GENERATED_SOURCE_FILES}
 	src/LidarInfo.cpp
-	)
+)
 
 target_include_directories(vnx_example
 	PUBLIC include generated/include

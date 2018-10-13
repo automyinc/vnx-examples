@@ -62,3 +62,7 @@ vnx-base, automy-basic, automy-math
 - [image_processor.cpp](src/image_processor.cpp)
 - [lidar_processor.cpp](src/lidar_processor.cpp)
 
+## How to generate code
+
+- [codegen.sh](codegen.sh)
+
