@@ -9,6 +9,7 @@ vnx-base, automy-basic, automy-math
 
 ## Examples
 
+- [Configuration](examples/configuration_example)
 - [Zero-copy publish/subscribe](examples/zero_copy_publish_subscribe)
 - [Local UNIX domain publish/subscribe](examples/local_publish_subscribe)
 - [Remote TCP publish/subscribe](examples/remote_publish_subscribe)

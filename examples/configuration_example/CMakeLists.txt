@@ -1,0 +1,3 @@
+
+add_executable(configuration_example configuration_example.cpp)
+target_link_libraries(configuration_example vnx_example)
