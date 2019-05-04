@@ -15,7 +15,7 @@ namespace example {
 
 
 const vnx::Hash64 LidarSensorBase::VNX_TYPE_HASH(0x3c7f512f5e85fe65ull);
-const vnx::Hash64 LidarSensorBase::VNX_CODE_HASH(0x4e59514c49ebfaadull);
+const vnx::Hash64 LidarSensorBase::VNX_CODE_HASH(0x2727daadb7271643ull);
 
 LidarSensorBase::LidarSensorBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
@@ -124,7 +124,7 @@ std::shared_ptr<vnx::TypeCode> LidarSensorBase::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarSensor";
 	type_code->type_hash = vnx::Hash64(0x3c7f512f5e85fe65ull);
-	type_code->code_hash = vnx::Hash64(0x4e59514c49ebfaadull);
+	type_code->code_hash = vnx::Hash64(0x2727daadb7271643ull);
 	type_code->depends.resize(1);
 	type_code->depends[0] = ::example::LidarInfo::get_type_code();
 	type_code->methods.resize(0);
@@ -189,22 +189,24 @@ void read(TypeInput& in, ::example::LidarSensorBase& value, const TypeCode* type
 		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
-	{
-		const vnx::TypeField* const _field = type_code->field_map[1];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.num_beams, _field->code.data());
+	if(type_code->is_matched) {
+		{
+			const vnx::TypeField* const _field = type_code->field_map[1];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.num_beams, _field->code.data());
+			}
 		}
-	}
-	{
-		const vnx::TypeField* const _field = type_code->field_map[2];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.num_angles, _field->code.data());
+		{
+			const vnx::TypeField* const _field = type_code->field_map[2];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.num_angles, _field->code.data());
+			}
 		}
-	}
-	{
-		const vnx::TypeField* const _field = type_code->field_map[3];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.interval_ms, _field->code.data());
+		{
+			const vnx::TypeField* const _field = type_code->field_map[3];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.interval_ms, _field->code.data());
+			}
 		}
 	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {

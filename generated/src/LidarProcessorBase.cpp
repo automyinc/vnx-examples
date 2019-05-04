@@ -15,7 +15,7 @@ namespace example {
 
 
 const vnx::Hash64 LidarProcessorBase::VNX_TYPE_HASH(0x7df3e7fe5968fe76ull);
-const vnx::Hash64 LidarProcessorBase::VNX_CODE_HASH(0xb230e1b6a07781d5ull);
+const vnx::Hash64 LidarProcessorBase::VNX_CODE_HASH(0xdb4e6a575ebb6d3bull);
 
 LidarProcessorBase::LidarProcessorBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
@@ -108,7 +108,7 @@ std::shared_ptr<vnx::TypeCode> LidarProcessorBase::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarProcessor";
 	type_code->type_hash = vnx::Hash64(0x7df3e7fe5968fe76ull);
-	type_code->code_hash = vnx::Hash64(0xb230e1b6a07781d5ull);
+	type_code->code_hash = vnx::Hash64(0xdb4e6a575ebb6d3bull);
 	type_code->depends.resize(1);
 	type_code->depends[0] = ::example::LidarInfo::get_type_code();
 	type_code->methods.resize(2);
@@ -204,6 +204,8 @@ bool LidarProcessorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out,
 	if(_call_type->type_hash == vnx::Hash64(0x3b1e2fc2a03761ceull)) {
 		::std::shared_ptr<const ::example::LidarInfo> sample;
 		const char* const _buf = _in.read(_call_type->total_field_size);
+		if(_call_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
@@ -215,6 +217,8 @@ bool LidarProcessorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out,
 	} else if(_call_type->type_hash == vnx::Hash64(0x2998b50070ccccf6ull)) {
 		::std::shared_ptr<const ::example::LidarPointCloud> sample;
 		const char* const _buf = _in.read(_call_type->total_field_size);
+		if(_call_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
@@ -245,6 +249,8 @@ void read(TypeInput& in, ::example::LidarProcessorBase& value, const TypeCode* t
 		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
+	if(type_code->is_matched) {
+	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
 			case 0: vnx::read(in, value.input, type_code, _field->code.data()); break;

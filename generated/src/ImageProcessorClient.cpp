@@ -19,11 +19,11 @@ ImageProcessorClient::ImageProcessorClient(vnx::Hash64 service_addr)
 {
 }
 
-void ImageProcessorClient::handle(const ::std::shared_ptr<const ::basic::ImageFrame8>& sample) {
+void ImageProcessorClient::handle(const ::std::shared_ptr<const ::automy::basic::ImageFrame8>& sample) {
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xa58d038b8530634cull));
+	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x5320177c92df4aa2ull));
 	{
 		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
 	}
@@ -32,7 +32,7 @@ void ImageProcessorClient::handle(const ::std::shared_ptr<const ::basic::ImageFr
 	vnx_request(_argument_data);
 }
 
-void ImageProcessorClient::handle_async(const ::std::shared_ptr<const ::basic::ImageFrame8>& sample) {
+void ImageProcessorClient::handle_async(const ::std::shared_ptr<const ::automy::basic::ImageFrame8>& sample) {
 	vnx_is_async = true;
 	handle(sample);
 }

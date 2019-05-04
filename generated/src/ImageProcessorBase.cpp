@@ -112,15 +112,15 @@ std::shared_ptr<vnx::TypeCode> ImageProcessorBase::create_type_code() {
 	type_code->methods.resize(1);
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "example.ImageProcessor.handle_basic_ImageFrame8";
-		call_type->type_hash = vnx::Hash64(0xa58d038b8530634cull);
-		call_type->code_hash = vnx::Hash64(0xca9a8c84c6c530ddull);
+		call_type->name = "example.ImageProcessor.handle_automy_basic_ImageFrame8";
+		call_type->type_hash = vnx::Hash64(0x5320177c92df4aa2ull);
+		call_type->code_hash = vnx::Hash64(0xdf96368e91c2bb27ull);
 		call_type->is_method = true;
 		{
 			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "example.ImageProcessor.handle_basic_ImageFrame8.return";
-			return_type->type_hash = vnx::Hash64(0x7dd6718e11eb831bull);
-			return_type->code_hash = vnx::Hash64(0x520d3a60c1c3feacull);
+			return_type->name = "example.ImageProcessor.handle_automy_basic_ImageFrame8.return";
+			return_type->type_hash = vnx::Hash64(0x38d29c6677d6b067ull);
+			return_type->code_hash = vnx::Hash64(0xe5f8bbd04ed918d4ull);
 			return_type->is_return = true;
 			return_type->build();
 			call_type->return_type = vnx::register_type_code(return_type);
@@ -160,8 +160,8 @@ std::shared_ptr<vnx::TypeCode> ImageProcessorBase::create_type_code() {
 
 void ImageProcessorBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
 	const uint64_t _type_hash = _sample->value->get_type_hash();
-	if(_type_hash == 0xd5cc519f12ca26ddull) {
-		std::shared_ptr<const basic::ImageFrame8> _value = std::dynamic_pointer_cast<const basic::ImageFrame8>(_sample->value);
+	if(_type_hash == 0x724ec7ab579fa982ull) {
+		std::shared_ptr<const automy::basic::ImageFrame8> _value = std::dynamic_pointer_cast<const automy::basic::ImageFrame8>(_sample->value);
 		if(_value) {
 			handle(_value, _sample);
 		}
@@ -169,9 +169,11 @@ void ImageProcessorBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sam
 }
 
 bool ImageProcessorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
-	if(_call_type->type_hash == vnx::Hash64(0xa58d038b8530634cull)) {
-		::std::shared_ptr<const ::basic::ImageFrame8> sample;
+	if(_call_type->type_hash == vnx::Hash64(0x5320177c92df4aa2ull)) {
+		::std::shared_ptr<const ::automy::basic::ImageFrame8> sample;
 		const char* const _buf = _in.read(_call_type->total_field_size);
+		if(_call_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
@@ -202,10 +204,12 @@ void read(TypeInput& in, ::example::ImageProcessorBase& value, const TypeCode* t
 		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
-	{
-		const vnx::TypeField* const _field = type_code->field_map[2];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.scale_factor, _field->code.data());
+	if(type_code->is_matched) {
+		{
+			const vnx::TypeField* const _field = type_code->field_map[2];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.scale_factor, _field->code.data());
+			}
 		}
 	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {

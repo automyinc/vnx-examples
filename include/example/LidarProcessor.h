@@ -4,6 +4,7 @@
 
 #include <example/LidarProcessorBase.hxx>
 
+using namespace automy;
 
 namespace example {
 

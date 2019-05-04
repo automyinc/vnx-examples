@@ -3,7 +3,9 @@
 #define INCLUDE_EXAMPLE_CAMERASENSOR_H_
 
 #include <example/CameraSensorBase.hxx>
-#include <basic/ImageFrame8.hxx>
+#include <automy/basic/ImageFrame8.hxx>
+
+using namespace automy;
 
 
 namespace example {

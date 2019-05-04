@@ -292,6 +292,8 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 	if(_call_type->type_hash == vnx::Hash64(0x2741180fbb8f23a1ull)) {
 		::std::string name;
 		const char* const _buf = _in.read(_call_type->total_field_size);
+		if(_call_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, name, _call_type, _field->code.data()); break;
@@ -304,10 +306,12 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 		::std::string name;
 		::vnx::float64_t value = 0;
 		const char* const _buf = _in.read(_call_type->total_field_size);
-		{
-			const vnx::TypeField* const _field = _call_type->field_map[1];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value, _field->code.data());
+		if(_call_type->is_matched) {
+			{
+				const vnx::TypeField* const _field = _call_type->field_map[1];
+				if(_field) {
+					vnx::read_value(_buf + _field->offset, value, _field->code.data());
+				}
 			}
 		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
@@ -321,6 +325,8 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 	} else if(_call_type->type_hash == vnx::Hash64(0x3e6f70937269a136ull)) {
 		::std::string name;
 		const char* const _buf = _in.read(_call_type->total_field_size);
+		if(_call_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, name, _call_type, _field->code.data()); break;
@@ -336,6 +342,8 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 	} else if(_call_type->type_hash == vnx::Hash64(0xe625a8cfd51e9a9eull)) {
 		::std::string name;
 		const char* const _buf = _in.read(_call_type->total_field_size);
+		if(_call_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, name, _call_type, _field->code.data()); break;
@@ -352,6 +360,8 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 	} else if(_call_type->type_hash == vnx::Hash64(0xa9a81442632b020eull)) {
 		::std::shared_ptr<const ::example::Transaction> sample;
 		const char* const _buf = _in.read(_call_type->total_field_size);
+		if(_call_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
@@ -364,10 +374,12 @@ bool DatabaseBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const
 		::std::string name;
 		::vnx::float64_t value = 0;
 		const char* const _buf = _in.read(_call_type->total_field_size);
-		{
-			const vnx::TypeField* const _field = _call_type->field_map[1];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value, _field->code.data());
+		if(_call_type->is_matched) {
+			{
+				const vnx::TypeField* const _field = _call_type->field_map[1];
+				if(_field) {
+					vnx::read_value(_buf + _field->offset, value, _field->code.data());
+				}
 			}
 		}
 		for(const vnx::TypeField* _field : _call_type->ext_fields) {
@@ -400,6 +412,8 @@ void read(TypeInput& in, ::example::DatabaseBase& value, const TypeCode* type_co
 		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
+	if(type_code->is_matched) {
+	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
 			case 0: vnx::read(in, value.input, type_code, _field->code.data()); break;

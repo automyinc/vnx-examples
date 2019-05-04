@@ -6,7 +6,7 @@
 
 #include <vnx/Type.h>
 #include <example/package.hxx>
-#include <math/Vector3d.h>
+#include <automy/math/Vector3d.h>
 
 
 namespace example {
@@ -15,7 +15,7 @@ struct lidar_point_t {
 	
 	
 	::int64_t time = 0;
-	::math::Vector3d position;
+	::automy::math::Vector3d position;
 	::vnx::float32_t distance = 0;
 	::vnx::float32_t intensity = 0;
 	

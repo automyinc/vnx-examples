@@ -1,8 +1,8 @@
 package example;
 
-import math.Vector3d;
+import automy.math.Vector3d;
 
-class LidarInfo extends basic.Transform3D {
+class LidarInfo extends automy.basic.Transform3D {
 	
 	Vector3d position;				// (x, y, z) [m]
 	

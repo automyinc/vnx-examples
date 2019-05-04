@@ -75,6 +75,8 @@ void DatabaseClient::add_user_balance_async(const ::std::string& name, const ::v
 	::std::shared_ptr<const ::example::User> _ret_0;
 	{
 		const char* const _buf = _in.read(_return_type->total_field_size);
+		if(_return_type->is_matched) {
+		}
 		for(const vnx::TypeField* _field : _return_type->ext_fields) {
 			switch(_field->native_index) {
 				case 0: vnx::read(_in, _ret_0, _return_type, _field->code.data()); break;
@@ -103,10 +105,12 @@ void DatabaseClient::add_user_balance_async(const ::std::string& name, const ::v
 	::vnx::float64_t _ret_0 = 0;
 	{
 		const char* const _buf = _in.read(_return_type->total_field_size);
-		{
-			const vnx::TypeField* const _field = _return_type->field_map[0];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, _ret_0, _field->code.data());
+		if(_return_type->is_matched) {
+			{
+				const vnx::TypeField* const _field = _return_type->field_map[0];
+				if(_field) {
+					vnx::read_value(_buf + _field->offset, _ret_0, _field->code.data());
+				}
 			}
 		}
 		for(const vnx::TypeField* _field : _return_type->ext_fields) {

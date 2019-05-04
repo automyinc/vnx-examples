@@ -145,10 +145,12 @@ void read(TypeInput& in, ::example::User& value, const TypeCode* type_code, cons
 		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
-	{
-		const vnx::TypeField* const _field = type_code->field_map[1];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.balance, _field->code.data());
+	if(type_code->is_matched) {
+		{
+			const vnx::TypeField* const _field = type_code->field_map[1];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.balance, _field->code.data());
+			}
 		}
 	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {

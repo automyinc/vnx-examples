@@ -14,7 +14,7 @@ namespace example {
 
 
 const vnx::Hash64 LidarInfo::VNX_TYPE_HASH(0x8d11d39b0f5a7b5cull);
-const vnx::Hash64 LidarInfo::VNX_CODE_HASH(0xed9be78dc9f1fb99ull);
+const vnx::Hash64 LidarInfo::VNX_CODE_HASH(0x30fbab18bef21c86ull);
 
 vnx::Hash64 LidarInfo::get_type_hash() const {
 	return VNX_TYPE_HASH;
@@ -122,10 +122,10 @@ std::shared_ptr<vnx::TypeCode> LidarInfo::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarInfo";
 	type_code->type_hash = vnx::Hash64(0x8d11d39b0f5a7b5cull);
-	type_code->code_hash = vnx::Hash64(0xed9be78dc9f1fb99ull);
+	type_code->code_hash = vnx::Hash64(0x30fbab18bef21c86ull);
 	type_code->is_class = true;
 	type_code->parents.resize(1);
-	type_code->parents[0] = ::basic::Transform3D::get_type_code();
+	type_code->parents[0] = ::automy::basic::Transform3D::get_type_code();
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<LidarInfo>(); };
 	type_code->fields.resize(4);
 	{
@@ -173,10 +173,12 @@ void read(TypeInput& in, ::example::LidarInfo& value, const TypeCode* type_code,
 		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
-	{
-		const vnx::TypeField* const _field = type_code->field_map[0];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.time, _field->code.data());
+	if(type_code->is_matched) {
+		{
+			const vnx::TypeField* const _field = type_code->field_map[0];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.time, _field->code.data());
+			}
 		}
 	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {

@@ -1,6 +1,6 @@
 package example;
 
-import math.Vector3d;
+import automy.math.Vector3d;
 
 struct lidar_point_t {
 	

@@ -173,22 +173,24 @@ void read(TypeInput& in, ::example::CameraSensorBase& value, const TypeCode* typ
 		}
 	}
 	const char* const _buf = in.read(type_code->total_field_size);
-	{
-		const vnx::TypeField* const _field = type_code->field_map[1];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.width, _field->code.data());
+	if(type_code->is_matched) {
+		{
+			const vnx::TypeField* const _field = type_code->field_map[1];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.width, _field->code.data());
+			}
 		}
-	}
-	{
-		const vnx::TypeField* const _field = type_code->field_map[2];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.height, _field->code.data());
+		{
+			const vnx::TypeField* const _field = type_code->field_map[2];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.height, _field->code.data());
+			}
 		}
-	}
-	{
-		const vnx::TypeField* const _field = type_code->field_map[3];
-		if(_field) {
-			vnx::read_value(_buf + _field->offset, value.interval_ms, _field->code.data());
+		{
+			const vnx::TypeField* const _field = type_code->field_map[3];
+			if(_field) {
+				vnx::read_value(_buf + _field->offset, value.interval_ms, _field->code.data());
+			}
 		}
 	}
 	for(const vnx::TypeField* _field : type_code->ext_fields) {

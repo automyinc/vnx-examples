@@ -5,19 +5,19 @@
 #define INCLUDE_example_LidarInfo_HXX_
 
 #include <example/package.hxx>
-#include <basic/Transform3D.hxx>
-#include <math/Vector3d.h>
+#include <automy/basic/Transform3D.hxx>
+#include <automy/math/Vector3d.h>
 
 
 namespace example {
 
-class LidarInfo : public ::basic::Transform3D {
+class LidarInfo : public ::automy::basic::Transform3D {
 public:
 	
-	::math::Vector3d position;
-	::math::Vector3d rotation;
+	::automy::math::Vector3d position;
+	::automy::math::Vector3d rotation;
 	
-	typedef ::basic::Transform3D Super;
+	typedef ::automy::basic::Transform3D Super;
 	
 	static const vnx::Hash64 VNX_TYPE_HASH;
 	static const vnx::Hash64 VNX_CODE_HASH;

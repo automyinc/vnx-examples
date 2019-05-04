@@ -11,6 +11,6 @@ module ImageProcessor {
 	float scale_factor = 1;			// factor to convert from 8-bit to float
 	
 	
-	void handle(basic.ImageFrame8 sample);
+	void handle(automy.basic.ImageFrame8 sample);
 	
 }

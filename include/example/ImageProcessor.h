@@ -3,7 +3,9 @@
 #define INCLUDE_EXAMPLE_IMAGEPROCESSOR_H
 
 #include <example/ImageProcessorBase.hxx>
-#include <basic/ImageFrameF32.hxx>
+#include <automy/basic/ImageFrameF32.hxx>
+
+using namespace automy;
 
 
 namespace example {

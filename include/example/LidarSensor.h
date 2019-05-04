@@ -5,6 +5,8 @@
 #include <example/LidarSensorBase.hxx>
 #include <example/LidarPointCloud.hxx>
 
+using namespace automy;
+
 
 namespace example {
 

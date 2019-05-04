@@ -1,7 +1,9 @@
 
 #include <example/LidarInfo.hxx>
 
-#include <math/Math3D.h>
+#include <automy/math/Math3D.h>
+
+using namespace automy;
 
 
 namespace example {
