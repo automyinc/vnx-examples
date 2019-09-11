@@ -1,0 +1,3 @@
+
+add_executable(record_file_api EXCLUDE_FROM_ALL record_file_api.cpp)
+target_link_libraries(record_file_api automy_vision automy_lidar automy_vehicle vnx_base)
