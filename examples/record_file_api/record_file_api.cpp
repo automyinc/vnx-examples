@@ -41,18 +41,23 @@ int main(int argc, char** argv) {
 	std::cout << *reader.get_header() << std::endl << std::endl;
 	
 	// test seek performance
-	{
+	try {
 		const int64_t time_begin = vnx::get_time_micros();
 		reader.seek_to_position(0.5);
 		std::cout << "Seek took " << (vnx::get_time_micros() - time_begin) << " usec" << std::endl;
-		
-		reader.reset();
+	} catch(std::exception& ex) {
+		std::cout << "Seek failed with: " << ex.what() << std::endl;
 	}
+	reader.reset();
 	
 	// read whole recording
 	while(vnx::do_run()) {
 		
 		std::shared_ptr<const vnx::Sample> sample = reader.get_sample();
+		
+		if(sample->value) {
+			std::cout << "Sample: topic='" << sample->topic->get_name() << "', class='" << sample->value->get_type_name() << "'" << std::endl;
+		}
 		
 		{
 			auto value = std::dynamic_pointer_cast<const vehicle::VehicleInfo>(sample->value);
