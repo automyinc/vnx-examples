@@ -42,9 +42,9 @@ int main(int argc, char** argv) {
 	
 	// test seek performance
 	try {
-		const int64_t time_begin = vnx::get_time_micros();
+		const int64_t time_begin = vnx::get_wall_time_micros();
 		reader.seek_to_position(0.5);
-		std::cout << "Seek took " << (vnx::get_time_micros() - time_begin) << " usec" << std::endl;
+		std::cout << "Seek took " << (vnx::get_wall_time_micros() - time_begin) << " usec" << std::endl;
 	} catch(std::exception& ex) {
 		std::cout << "Seek failed with: " << ex.what() << std::endl;
 	}
