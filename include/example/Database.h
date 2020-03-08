@@ -39,7 +39,7 @@ protected:
 	void main() override {
 		
 		// Register ourselves as a service with our module name as service name.
-		vnx::open_pipe(vnx_name, this);
+		vnx::open_pipe(vnx_name, this, UNLIMITED);
 		
 		/*
 		 * A max queue length of 0 means unlimited, we use it here since we don't want to drop any transactions.
