@@ -47,8 +47,8 @@ protected:
 	virtual void handle(std::shared_ptr<const ::automy::basic::ImageFrame8> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
 	virtual void handle(std::shared_ptr<const ::automy::basic::ImageFrame8> _value) {}
 	
-	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample);
-	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type);
+	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) override;
+	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) override;
 	
 };
 
