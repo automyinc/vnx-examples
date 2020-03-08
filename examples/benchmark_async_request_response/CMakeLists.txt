@@ -1,0 +1,3 @@
+
+add_executable(benchmark_async_request_response benchmark_async_request_response.cpp)
+target_link_libraries(benchmark_async_request_response vnx_example)

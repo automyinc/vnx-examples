@@ -2,4 +2,5 @@
 add_subdirectory(configuration_example)
 add_subdirectory(zero_copy_publish_subscribe)
 add_subdirectory(benchmark_request_response)
+add_subdirectory(benchmark_async_request_response)
 add_subdirectory(record_file_api)
