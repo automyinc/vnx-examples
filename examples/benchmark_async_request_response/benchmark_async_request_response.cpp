@@ -5,6 +5,7 @@
 #include <vnx/Config.h>
 #include <vnx/Process.h>
 #include <vnx/Proxy.h>
+#include <vnx/Module.h>
 
 using namespace std::placeholders;
 
@@ -82,10 +83,10 @@ private:
 	
 	void accept(vnx::Visitor& _visitor) const override {}
 	
-	void handle_switch(std::shared_ptr<const vnx::Sample> sample) override {}
+	void vnx_handle_switch(std::shared_ptr<const vnx::Sample> sample) override {}
 	
-	bool call_switch(vnx::TypeInput& in, vnx::TypeOutput& out, const vnx::TypeCode* call_type, const vnx::TypeCode* return_type) override {
-		return false;
+	std::shared_ptr<vnx::Value> vnx_call_switch(vnx::TypeInput& in, const vnx::TypeCode* call_type, const vnx::request_id_t& request_id) override {
+		return 0;
 	}
 	
 private:
