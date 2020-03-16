@@ -1,0 +1,9 @@
+package example;
+
+class File {
+	
+	string file_name;
+	
+	vector<uchar> contents;
+	
+}

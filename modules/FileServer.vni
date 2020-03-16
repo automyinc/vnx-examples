@@ -1,0 +1,12 @@
+package example;
+
+module FileServer {
+	
+	string root_path;
+	
+	int num_threads = 10;
+	
+	
+	File* get_file(string file_name) const async;
+	
+}

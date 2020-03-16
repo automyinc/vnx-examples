@@ -37,4 +37,7 @@ target_link_libraries(lidar_sensor vnx_example)
 add_executable(lidar_processor src/lidar_processor.cpp)
 target_link_libraries(lidar_processor vnx_example)
 
+add_executable(file_server src/file_server.cpp)
+target_link_libraries(file_server vnx_example)
+
 add_subdirectory(examples)
