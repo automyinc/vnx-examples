@@ -1,6 +1,5 @@
 
-#include <example/User.hxx>
-#include <example/DatabaseAsyncClient.hxx>
+#include <example/FileServerAsyncClient.hxx>
 
 #include <vnx/Config.h>
 #include <vnx/Process.h>
@@ -12,26 +11,23 @@ using namespace std::placeholders;
 
 class TestModule : public vnx::Module {
 public:
+	std::string service_name;
 	int max_num_pending = 100;
 	
-	TestModule(const std::string& service_name)
-		:	Module("TestModule")
+	TestModule(const std::string& _vnx_name)
+		:	Module(_vnx_name)
 	{
-		client = std::make_shared<example::DatabaseAsyncClient>(service_name);
 	}
 	
 protected:
-	void main() override {
-		
+	void main() override
+	{
 		set_timer_millis(500, std::bind(&TestModule::execute_requests, this));
-		
 		set_timer_millis(1000, std::bind(&TestModule::print_stats, this));
 		
-		add_async_client(client);
-		
+		client = std::make_shared<example::FileServerAsyncClient>(service_name);
 		client->vnx_set_error_callback(std::bind(&TestModule::error_callback, this, _1, _2));
-		
-		client->add_user(user_name, std::bind(&TestModule::add_user_callback, this, user_name));
+		add_async_client(client);
 		
 		Module::main();
 		
@@ -39,38 +35,36 @@ protected:
 	}
 	
 	void execute_requests() {
-		if(!user_added) {
-			return;
-		}
-		while(client->vnx_get_num_pending() < size_t(max_num_pending)) {
-			client->get_user_balance(user_name, std::bind(&TestModule::get_user_balance_callback, this, _1, user_name));
+		try {
+			while(client->vnx_get_num_pending() < size_t(max_num_pending))
+			{
+				const auto file_name = "data/file" + std::to_string(file_counter % 10000);
+				client->get_file(file_name, std::bind(&TestModule::get_file_callback, this, _1, file_name));
+				file_counter++;
+			}
+		} catch(const std::exception& ex) {
+			log(WARN).out << ex.what();
 		}
 	}
 	
-	void add_user_callback(const std::string& user_name) {
-		log(INFO).out << "User " << user_name << " successfully added.";
-		user_added = true;
-		execute_requests();
-	}
-	
-	void get_user_balance_callback(vnx::float64_t balance, const std::string& user_name) {
+	void get_file_callback(std::shared_ptr<const example::File> file, const std::string& file_name)
+	{
 		if(success_counter == 0) {
-			log(INFO).out << "User balance: " << balance;
+			log(DEBUG).out << "File: name='" << file->file_name << "', size=" << file->contents.size();
 		}
 		execute_requests();
 		success_counter++;
 	}
 	
-	void error_callback(uint64_t request_id, const std::exception& ex) {
+	void error_callback(uint64_t request_id, const std::exception& ex)
+	{
 		log(WARN).out << "Request " << request_id << " failed with: " << ex.what();
-		if(!user_added) {
-			log(ERROR).out << "Failed to add user!";
-		}
 		error_counter++;
 	}
 	
 	void print_stats() {
-		log(INFO).out << success_counter << " req/s, " << error_counter << " errors";
+		log(INFO).out << success_counter << " req/s, " << error_counter << " errors, "
+				<< client->vnx_get_num_pending() << " pending";
 		success_counter = 0;
 	}
 	
@@ -90,11 +84,9 @@ private:
 	}
 	
 private:
-	std::shared_ptr<example::DatabaseAsyncClient> client;
+	std::shared_ptr<example::FileServerAsyncClient> client;
 	
-	bool user_added = false;
-	std::string user_name = "test_user";
-	
+	uint64_t file_counter = 0;
 	uint64_t success_counter = 0;
 	uint64_t error_counter = 0;
 	
@@ -112,15 +104,15 @@ int main(int argc, char** argv) {
 	/*
 	 * By default we try to connect over a local UNIX socket.
 	 */
-	std::string node = "database_server.sock";
+	std::string node = "file_server.sock";
 	vnx::read_config("node", node);
 	
 	{
 		// Create a Proxy to connect to the database process
 		vnx::Handle<vnx::Proxy> proxy = new vnx::Proxy("Proxy", vnx::Endpoint::from_url(node));
 		
-		// Tell the Proxy to forward requests to service "Database"
-		proxy->forward_list.push_back("Database");
+		// Tell the Proxy to forward requests to service "FileServer"
+		proxy->forward_list.push_back("FileServer");
 		
 		// Proxy needs to be started before trying to access the forwarded service
 		proxy.start_detached();
@@ -129,7 +121,8 @@ int main(int argc, char** argv) {
 	/*
 	 * Create and start our module.
 	 */
-	vnx::Handle<TestModule> module = new TestModule("Database");
+	vnx::Handle<TestModule> module = new TestModule("TestModule");
+	module->service_name = "FileServer";
 	
 	module.start_detached();
 	

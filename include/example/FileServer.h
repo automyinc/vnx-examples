@@ -11,6 +11,8 @@
 #include <example/FileServerBase.hxx>
 #include <example/InputOutputError.hxx>
 
+#include <atomic>
+
 
 namespace example {
 
@@ -43,15 +45,19 @@ protected:
 			worker->thread = std::thread(&FileServer::work_loop, this);
 			workers.push_back(worker);
 		}
+		set_timer_millis(1000, std::bind(&FileServer::print_stats, this));
+		
 		Super::main();
+		
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			do_run = false;
 			condition.notify_all();
-			for(auto worker : workers) {
-				worker->thread.join();
-			}
 		}
+		for(auto worker : workers) {
+			worker->thread.join();
+		}
+		// pending requests in work_queue are canceled automatically upon module exit
 	}
 	
 	void get_file_async(const std::string& file_name,
@@ -65,6 +71,13 @@ protected:
 		request->callback = callback;
 		work_queue.push(request);
 		condition.notify_one();
+		request_counter++;
+	}
+	
+	void print_stats() {
+		log(INFO).out << request_counter << " req/s, " << num_bytes_read/1024 << " KB/s read";
+		request_counter = 0;
+		num_bytes_read = 0;
 	}
 	
 private:
@@ -85,8 +98,9 @@ private:
 			if(!request) {
 				break;
 			}
+			const std::string full_path = root_path + request->file_name;
 			
-			::FILE* p_file = ::fopen(request->file_name.c_str(), "rb");
+			::FILE* p_file = ::fopen(full_path.c_str(), "rb");
 			if(!p_file) {
 				auto ex = InputOutputError::create();
 				ex->what = "fopen() failed for: " + request->file_name;
@@ -99,16 +113,18 @@ private:
 			::fseek(p_file, 0, SEEK_SET);
 			
 			auto file = File::create();
+			file->file_name = request->file_name;
 			file->contents.resize(file_size);
 			
 			const size_t num_read = ::fread(&file->contents[0], 1, size_t(file_size), p_file);
-			if(num_read != file_size) {
+			if(num_read == file_size) {
+				request->callback(file);
+			} else {
 				auto ex = InputOutputError::create();
 				ex->what = "fread() failed for: " + request->file_name;
 				vnx_async_return(request->id, ex);
-				continue;
 			}
-			request->callback(file);
+			num_bytes_read += num_read;
 			
 			::fclose(p_file);
 		}
@@ -123,6 +139,9 @@ private:
 	mutable std::queue<std::shared_ptr<request_t>> work_queue;
 	
 	std::vector<std::shared_ptr<worker_t>> workers;
+	
+	mutable uint64_t request_counter = 0;
+	mutable std::atomic<uint64_t> num_bytes_read;
 	
 };
 
