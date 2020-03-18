@@ -18,6 +18,8 @@ public:
 	
 	LidarSensorAsyncClient(vnx::Hash64 service_addr);
 	
+	std::vector<uint64_t> vnx_get_pending_ids() const override;
+	
 protected:
 	void vnx_purge_request(uint64_t _request_id) override;
 	

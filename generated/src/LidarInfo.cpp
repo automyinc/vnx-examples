@@ -41,7 +41,7 @@ void LidarInfo::write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, co
 }
 
 void LidarInfo::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_LidarInfo;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, time);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, matrix);
@@ -127,6 +127,25 @@ std::shared_ptr<vnx::TypeCode> LidarInfo::create_type_code() {
 	type_code->parents.resize(1);
 	type_code->parents[0] = ::automy::basic::Transform3D::get_type_code();
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<LidarInfo>(); };
+	type_code->methods.resize(1);
+	{
+		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
+		call_type->name = "example.LidarInfo.update";
+		call_type->type_hash = vnx::Hash64(0x7ad4a298e3407547ull);
+		call_type->code_hash = vnx::Hash64(0x7469faa11d46660cull);
+		call_type->is_method = true;
+		{
+			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
+			return_type->name = "example.LidarInfo.update.return";
+			return_type->type_hash = vnx::Hash64(0x4130d15b3995d431ull);
+			return_type->code_hash = vnx::Hash64(0x71dc0bc0a39c4760ull);
+			return_type->is_return = true;
+			return_type->build();
+			call_type->return_type = vnx::register_type_code(return_type);
+		}
+		call_type->build();
+		type_code->methods[0] = vnx::register_type_code(call_type);
+	}
 	type_code->fields.resize(4);
 	{
 		vnx::TypeField& field = type_code->fields[0];
@@ -193,7 +212,8 @@ void read(TypeInput& in, ::example::LidarInfo& value, const TypeCode* type_code,
 
 void write(TypeOutput& out, const ::example::LidarInfo& value, const TypeCode* type_code, const uint16_t* code) {
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::example::LidarInfo>(out);
+		type_code = example::vnx_native_type_code_LidarInfo;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::example::LidarInfo>(out);
 	}
 	if(code && code[0] == CODE_STRUCT) {

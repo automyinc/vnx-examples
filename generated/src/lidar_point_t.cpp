@@ -41,7 +41,7 @@ void lidar_point_t::write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code
 }
 
 void lidar_point_t::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_lidar_point_t;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, time);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, position);
@@ -124,6 +124,7 @@ std::shared_ptr<vnx::TypeCode> lidar_point_t::create_type_code() {
 	type_code->type_hash = vnx::Hash64(0x23a1b484366dcb3dull);
 	type_code->code_hash = vnx::Hash64(0xac665ed7c1408210ull);
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<vnx::Struct<lidar_point_t>>(); };
+	type_code->methods.resize(0);
 	type_code->fields.resize(4);
 	{
 		vnx::TypeField& field = type_code->fields[0];
@@ -198,7 +199,8 @@ void read(TypeInput& in, ::example::lidar_point_t& value, const TypeCode* type_c
 
 void write(TypeOutput& out, const ::example::lidar_point_t& value, const TypeCode* type_code, const uint16_t* code) {
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::example::lidar_point_t>(out);
+		type_code = example::vnx_native_type_code_lidar_point_t;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::example::lidar_point_t>(out);
 	}
 	if(code && code[0] == CODE_STRUCT) {

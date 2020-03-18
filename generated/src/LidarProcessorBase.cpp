@@ -9,6 +9,8 @@
 #include <vnx/Object.h>
 #include <vnx/Struct.h>
 #include <vnx/Config.h>
+#include <vnx/Binary.h>
+#include <vnx/NoSuchMethod.hxx>
 
 
 namespace example {
@@ -34,7 +36,7 @@ const char* LidarProcessorBase::get_type_name() const {
 }
 
 void LidarProcessorBase::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_LidarProcessor;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, input);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, output);
@@ -185,7 +187,7 @@ std::shared_ptr<vnx::TypeCode> LidarProcessorBase::create_type_code() {
 	return type_code;
 }
 
-void LidarProcessorBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
+void LidarProcessorBase::vnx_handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
 	const uint64_t _type_hash = _sample->value->get_type_hash();
 	if(_type_hash == 0x8d11d39b0f5a7b5cull) {
 		std::shared_ptr<const example::LidarInfo> _value = std::dynamic_pointer_cast<const example::LidarInfo>(_sample->value);
@@ -200,35 +202,53 @@ void LidarProcessorBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sam
 	}
 }
 
-bool LidarProcessorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
+std::shared_ptr<vnx::Value> LidarProcessorBase::vnx_call_switch(vnx::TypeInput& _in, const vnx::TypeCode* _call_type, const vnx::request_id_t& _request_id) {
 	if(_call_type->type_hash == vnx::Hash64(0x3b1e2fc2a03761ceull)) {
 		::std::shared_ptr<const ::example::LidarInfo> sample;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		if(_call_type->is_matched) {
-		}
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
+		{
+			const char* const _buf = _in.read(_call_type->total_field_size);
+			if(_call_type->is_matched) {
+			}
+			for(const vnx::TypeField* _field : _call_type->ext_fields) {
+				switch(_field->native_index) {
+					case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
+					default: vnx::skip(_in, _call_type, _field->code.data());
+				}
 			}
 		}
 		handle(sample);
-		return true;
+		std::shared_ptr<vnx::Binary> _return_value;
+		{
+			const vnx::TypeCode* _return_type = example::vnx_native_type_code_LidarProcessor_handle_example_LidarInfo_return;
+			_return_value = vnx::Binary::create();
+			_return_value->type_code = _return_type;
+		}
+		return _return_value;
 	} else if(_call_type->type_hash == vnx::Hash64(0x2998b50070ccccf6ull)) {
 		::std::shared_ptr<const ::example::LidarPointCloud> sample;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		if(_call_type->is_matched) {
-		}
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
+		{
+			const char* const _buf = _in.read(_call_type->total_field_size);
+			if(_call_type->is_matched) {
+			}
+			for(const vnx::TypeField* _field : _call_type->ext_fields) {
+				switch(_field->native_index) {
+					case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
+					default: vnx::skip(_in, _call_type, _field->code.data());
+				}
 			}
 		}
 		handle(sample);
-		return true;
+		std::shared_ptr<vnx::Binary> _return_value;
+		{
+			const vnx::TypeCode* _return_type = example::vnx_native_type_code_LidarProcessor_handle_example_LidarPointCloud_return;
+			_return_value = vnx::Binary::create();
+			_return_value->type_code = _return_type;
+		}
+		return _return_value;
 	}
-	return false;
+	auto _ex = vnx::NoSuchMethod::create();
+	_ex->method = _call_type->name;
+	return _ex;
 }
 
 
@@ -263,7 +283,8 @@ void read(TypeInput& in, ::example::LidarProcessorBase& value, const TypeCode* t
 
 void write(TypeOutput& out, const ::example::LidarProcessorBase& value, const TypeCode* type_code, const uint16_t* code) {
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::example::LidarProcessorBase>(out);
+		type_code = example::vnx_native_type_code_LidarProcessor;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::example::LidarProcessorBase>(out);
 	}
 	if(code && code[0] == CODE_STRUCT) {

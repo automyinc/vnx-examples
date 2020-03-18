@@ -23,7 +23,7 @@ uint64_t DatabaseAsyncClient::add_user(const ::std::string& name, const std::fun
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x2741180fbb8f23a1ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_add_user;
 	{
 		vnx::write(_out, name, _type_code, _type_code->fields[0].code.data());
 	}
@@ -39,7 +39,7 @@ uint64_t DatabaseAsyncClient::add_user_balance(const ::std::string& name, const 
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x3d6e042d45e04326ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_add_user_balance;
 	{
 		char* const _buf = _out.write(8);
 		vnx::write_value(_buf + 0, value);
@@ -57,7 +57,7 @@ uint64_t DatabaseAsyncClient::get_user(const ::std::string& name, const std::fun
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x3e6f70937269a136ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_get_user;
 	{
 		vnx::write(_out, name, _type_code, _type_code->fields[0].code.data());
 	}
@@ -73,7 +73,7 @@ uint64_t DatabaseAsyncClient::get_user_balance(const ::std::string& name, const 
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xe625a8cfd51e9a9eull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_get_user_balance;
 	{
 		vnx::write(_out, name, _type_code, _type_code->fields[0].code.data());
 	}
@@ -89,7 +89,7 @@ uint64_t DatabaseAsyncClient::handle(const ::std::shared_ptr<const ::example::Tr
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xa9a81442632b020eull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_handle_example_Transaction;
 	{
 		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
 	}
@@ -105,7 +105,7 @@ uint64_t DatabaseAsyncClient::subtract_user_balance(const ::std::string& name, c
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xe58127da78610817ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_subtract_user_balance;
 	{
 		char* const _buf = _out.write(8);
 		vnx::write_value(_buf + 0, value);
@@ -117,6 +117,29 @@ uint64_t DatabaseAsyncClient::subtract_user_balance(const ::std::string& name, c
 	vnx_queue_subtract_user_balance[_request_id] = _callback;
 	vnx_num_pending++;
 	return _request_id;
+}
+
+std::vector<uint64_t>DatabaseAsyncClient::vnx_get_pending_ids() const {
+	std::vector<uint64_t> _list;
+	for(const auto& entry : vnx_queue_add_user) {
+		_list.push_back(entry.first);
+	}
+	for(const auto& entry : vnx_queue_add_user_balance) {
+		_list.push_back(entry.first);
+	}
+	for(const auto& entry : vnx_queue_get_user) {
+		_list.push_back(entry.first);
+	}
+	for(const auto& entry : vnx_queue_get_user_balance) {
+		_list.push_back(entry.first);
+	}
+	for(const auto& entry : vnx_queue_handle_example_Transaction) {
+		_list.push_back(entry.first);
+	}
+	for(const auto& entry : vnx_queue_subtract_user_balance) {
+		_list.push_back(entry.first);
+	}
+	return _list;
 }
 
 void DatabaseAsyncClient::vnx_purge_request(uint64_t _request_id) {
@@ -136,21 +159,23 @@ void DatabaseAsyncClient::vnx_callback_switch(uint64_t _request_id, std::shared_
 	if(_return_type->type_hash == vnx::Hash64(0x73df74b7d405f6b0ull)) {
 		auto _iter = vnx_queue_add_user.find(_request_id);
 		if(_iter != vnx_queue_add_user.end()) {
-			if(_iter->second) {
-				_iter->second();
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_add_user.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback();
+			}
 		}
 	}
 	else if(_return_type->type_hash == vnx::Hash64(0xce8eb9027f2289c3ull)) {
 		auto _iter = vnx_queue_add_user_balance.find(_request_id);
 		if(_iter != vnx_queue_add_user_balance.end()) {
-			if(_iter->second) {
-				_iter->second();
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_add_user_balance.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback();
+			}
 		}
 	}
 	else if(_return_type->type_hash == vnx::Hash64(0x36d19b92367474d9ull)) {
@@ -168,11 +193,12 @@ void DatabaseAsyncClient::vnx_callback_switch(uint64_t _request_id, std::shared_
 		}
 		auto _iter = vnx_queue_get_user.find(_request_id);
 		if(_iter != vnx_queue_get_user.end()) {
-			if(_iter->second) {
-				_iter->second(_ret_0);
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_get_user.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback(_ret_0);
+			}
 		}
 	}
 	else if(_return_type->type_hash == vnx::Hash64(0x50b361140a464af7ull)) {
@@ -195,31 +221,34 @@ void DatabaseAsyncClient::vnx_callback_switch(uint64_t _request_id, std::shared_
 		}
 		auto _iter = vnx_queue_get_user_balance.find(_request_id);
 		if(_iter != vnx_queue_get_user_balance.end()) {
-			if(_iter->second) {
-				_iter->second(_ret_0);
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_get_user_balance.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback(_ret_0);
+			}
 		}
 	}
 	else if(_return_type->type_hash == vnx::Hash64(0xa6ede797ad62d986ull)) {
 		auto _iter = vnx_queue_handle_example_Transaction.find(_request_id);
 		if(_iter != vnx_queue_handle_example_Transaction.end()) {
-			if(_iter->second) {
-				_iter->second();
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_handle_example_Transaction.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback();
+			}
 		}
 	}
 	else if(_return_type->type_hash == vnx::Hash64(0x602e1ee9204ea132ull)) {
 		auto _iter = vnx_queue_subtract_user_balance.find(_request_id);
 		if(_iter != vnx_queue_subtract_user_balance.end()) {
-			if(_iter->second) {
-				_iter->second();
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_subtract_user_balance.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback();
+			}
 		}
 	}
 }

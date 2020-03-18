@@ -5,7 +5,10 @@
 
 #include <example/CameraSensorBase.hxx>
 #include <example/DatabaseBase.hxx>
+#include <example/File.hxx>
+#include <example/FileServerBase.hxx>
 #include <example/ImageProcessorBase.hxx>
+#include <example/InputOutputError.hxx>
 #include <example/LidarInfo.hxx>
 #include <example/LidarPointCloud.hxx>
 #include <example/LidarProcessorBase.hxx>
@@ -24,7 +27,10 @@ std::shared_ptr<vnx::Topic> transactions = vnx::get_topic("example", "transactio
 static void register_all_types() {
 	vnx::register_type_code(example::CameraSensorBase::create_type_code());
 	vnx::register_type_code(example::DatabaseBase::create_type_code());
+	vnx::register_type_code(example::File::create_type_code());
+	vnx::register_type_code(example::FileServerBase::create_type_code());
 	vnx::register_type_code(example::ImageProcessorBase::create_type_code());
+	vnx::register_type_code(example::InputOutputError::create_type_code());
 	vnx::register_type_code(example::LidarInfo::create_type_code());
 	vnx::register_type_code(example::LidarPointCloud::create_type_code());
 	vnx::register_type_code(example::LidarProcessorBase::create_type_code());
@@ -40,5 +46,42 @@ static struct vnx_static_init {
 		register_all_types();
 	}
 } vnx_static_init_;
+
+const vnx::TypeCode* const vnx_native_type_code_CameraSensor = vnx::get_type_code(vnx::Hash64(0x2201bbd3b25391ebull));
+const vnx::TypeCode* const vnx_native_type_code_Database = vnx::get_type_code(vnx::Hash64(0x8d362075de8ee5efull));
+const vnx::TypeCode* const vnx_native_type_code_Database_add_user = vnx::get_type_code(vnx::Hash64(0x2741180fbb8f23a1ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_add_user_return = vnx::get_type_code(vnx::Hash64(0x73df74b7d405f6b0ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_add_user_balance = vnx::get_type_code(vnx::Hash64(0x3d6e042d45e04326ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_add_user_balance_return = vnx::get_type_code(vnx::Hash64(0xce8eb9027f2289c3ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_get_user = vnx::get_type_code(vnx::Hash64(0x3e6f70937269a136ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_get_user_return = vnx::get_type_code(vnx::Hash64(0x36d19b92367474d9ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_get_user_balance = vnx::get_type_code(vnx::Hash64(0xe625a8cfd51e9a9eull));
+const vnx::TypeCode* const vnx_native_type_code_Database_get_user_balance_return = vnx::get_type_code(vnx::Hash64(0x50b361140a464af7ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_handle_example_Transaction = vnx::get_type_code(vnx::Hash64(0xa9a81442632b020eull));
+const vnx::TypeCode* const vnx_native_type_code_Database_handle_example_Transaction_return = vnx::get_type_code(vnx::Hash64(0xa6ede797ad62d986ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_subtract_user_balance = vnx::get_type_code(vnx::Hash64(0xe58127da78610817ull));
+const vnx::TypeCode* const vnx_native_type_code_Database_subtract_user_balance_return = vnx::get_type_code(vnx::Hash64(0x602e1ee9204ea132ull));
+const vnx::TypeCode* const vnx_native_type_code_File = vnx::get_type_code(vnx::Hash64(0x8742ecc1bab8119eull));
+const vnx::TypeCode* const vnx_native_type_code_FileServer = vnx::get_type_code(vnx::Hash64(0x7361123445d5e0eull));
+const vnx::TypeCode* const vnx_native_type_code_FileServer_get_file = vnx::get_type_code(vnx::Hash64(0x3d103650f660b364ull));
+const vnx::TypeCode* const vnx_native_type_code_FileServer_get_file_return = vnx::get_type_code(vnx::Hash64(0x13362942844b1d03ull));
+const vnx::TypeCode* const vnx_native_type_code_ImageProcessor = vnx::get_type_code(vnx::Hash64(0x212f42213adea73dull));
+const vnx::TypeCode* const vnx_native_type_code_ImageProcessor_handle_automy_basic_ImageFrame8 = vnx::get_type_code(vnx::Hash64(0x5320177c92df4aa2ull));
+const vnx::TypeCode* const vnx_native_type_code_ImageProcessor_handle_automy_basic_ImageFrame8_return = vnx::get_type_code(vnx::Hash64(0x38d29c6677d6b067ull));
+const vnx::TypeCode* const vnx_native_type_code_InputOutputError = vnx::get_type_code(vnx::Hash64(0x1443a327225d003full));
+const vnx::TypeCode* const vnx_native_type_code_LidarInfo = vnx::get_type_code(vnx::Hash64(0x8d11d39b0f5a7b5cull));
+const vnx::TypeCode* const vnx_native_type_code_LidarInfo_update = vnx::get_type_code(vnx::Hash64(0x7ad4a298e3407547ull));
+const vnx::TypeCode* const vnx_native_type_code_LidarInfo_update_return = vnx::get_type_code(vnx::Hash64(0x4130d15b3995d431ull));
+const vnx::TypeCode* const vnx_native_type_code_LidarPointCloud = vnx::get_type_code(vnx::Hash64(0x245fc412fc39f4acull));
+const vnx::TypeCode* const vnx_native_type_code_LidarProcessor = vnx::get_type_code(vnx::Hash64(0x7df3e7fe5968fe76ull));
+const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarInfo = vnx::get_type_code(vnx::Hash64(0x3b1e2fc2a03761ceull));
+const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarInfo_return = vnx::get_type_code(vnx::Hash64(0x7967c878d16d870aull));
+const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarPointCloud = vnx::get_type_code(vnx::Hash64(0x2998b50070ccccf6ull));
+const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarPointCloud_return = vnx::get_type_code(vnx::Hash64(0x563c486fd84f7fa3ull));
+const vnx::TypeCode* const vnx_native_type_code_LidarSensor = vnx::get_type_code(vnx::Hash64(0x3c7f512f5e85fe65ull));
+const vnx::TypeCode* const vnx_native_type_code_Transaction = vnx::get_type_code(vnx::Hash64(0xcac4a4d10cff0323ull));
+const vnx::TypeCode* const vnx_native_type_code_User = vnx::get_type_code(vnx::Hash64(0x29f409d7512427eaull));
+const vnx::TypeCode* const vnx_native_type_code_lidar_point_t = vnx::get_type_code(vnx::Hash64(0x23a1b484366dcb3dull));
+const vnx::TypeCode* const vnx_native_type_code_transaction_type_e = vnx::get_type_code(vnx::Hash64(0xcbdf8f90f7bbb940ull));
 
 } // namespace example

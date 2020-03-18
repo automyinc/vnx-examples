@@ -41,7 +41,7 @@ void User::write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const u
 }
 
 void User::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_User;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, name);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, balance);
@@ -111,6 +111,7 @@ std::shared_ptr<vnx::TypeCode> User::create_type_code() {
 	type_code->code_hash = vnx::Hash64(0xee1c9fbd329bbc95ull);
 	type_code->is_class = true;
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<User>(); };
+	type_code->methods.resize(0);
 	type_code->fields.resize(2);
 	{
 		vnx::TypeField& field = type_code->fields[0];
@@ -163,7 +164,8 @@ void read(TypeInput& in, ::example::User& value, const TypeCode* type_code, cons
 
 void write(TypeOutput& out, const ::example::User& value, const TypeCode* type_code, const uint16_t* code) {
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::example::User>(out);
+		type_code = example::vnx_native_type_code_User;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::example::User>(out);
 	}
 	if(code && code[0] == CODE_STRUCT) {

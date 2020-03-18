@@ -9,6 +9,8 @@
 #include <vnx/Object.h>
 #include <vnx/Struct.h>
 #include <vnx/Config.h>
+#include <vnx/Binary.h>
+#include <vnx/NoSuchMethod.hxx>
 
 
 namespace example {
@@ -35,7 +37,7 @@ const char* CameraSensorBase::get_type_name() const {
 }
 
 void CameraSensorBase::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_CameraSensor;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, output);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, width);
@@ -147,12 +149,14 @@ std::shared_ptr<vnx::TypeCode> CameraSensorBase::create_type_code() {
 	return type_code;
 }
 
-void CameraSensorBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
+void CameraSensorBase::vnx_handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
 	const uint64_t _type_hash = _sample->value->get_type_hash();
 }
 
-bool CameraSensorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
-	return false;
+std::shared_ptr<vnx::Value> CameraSensorBase::vnx_call_switch(vnx::TypeInput& _in, const vnx::TypeCode* _call_type, const vnx::request_id_t& _request_id) {
+	auto _ex = vnx::NoSuchMethod::create();
+	_ex->method = _call_type->name;
+	return _ex;
 }
 
 
@@ -203,7 +207,8 @@ void read(TypeInput& in, ::example::CameraSensorBase& value, const TypeCode* typ
 
 void write(TypeOutput& out, const ::example::CameraSensorBase& value, const TypeCode* type_code, const uint16_t* code) {
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::example::CameraSensorBase>(out);
+		type_code = example::vnx_native_type_code_CameraSensor;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::example::CameraSensorBase>(out);
 	}
 	if(code && code[0] == CODE_STRUCT) {

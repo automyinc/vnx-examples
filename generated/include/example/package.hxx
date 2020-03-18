@@ -17,7 +17,10 @@ extern std::shared_ptr<vnx::Topic> transactions;
 
 class CameraSensorBase;
 class DatabaseBase;
+class File;
+class FileServerBase;
 class ImageProcessorBase;
+class InputOutputError;
 class LidarInfo;
 class LidarPointCloud;
 class LidarProcessorBase;
@@ -27,6 +30,42 @@ class Transaction;
 class User;
 struct lidar_point_t;
 struct transaction_type_e;
+extern const vnx::TypeCode* const vnx_native_type_code_CameraSensor; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_add_user; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_add_user_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_add_user_balance; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_add_user_balance_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_get_user; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_get_user_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_get_user_balance; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_get_user_balance_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_handle_example_Transaction; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_handle_example_Transaction_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_subtract_user_balance; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Database_subtract_user_balance_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_File; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_FileServer; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_FileServer_get_file; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_FileServer_get_file_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_ImageProcessor; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_ImageProcessor_handle_automy_basic_ImageFrame8; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_ImageProcessor_handle_automy_basic_ImageFrame8_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_InputOutputError; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarInfo; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarInfo_update; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarInfo_update_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarPointCloud; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarProcessor; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarInfo; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarInfo_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarPointCloud; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarProcessor_handle_example_LidarPointCloud_return; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_LidarSensor; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_Transaction; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_User; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_lidar_point_t; ///< \private
+extern const vnx::TypeCode* const vnx_native_type_code_transaction_type_e; ///< \private
 
 } // namespace example
 
@@ -35,7 +74,10 @@ namespace vnx {
 
 void read(TypeInput& in, ::example::CameraSensorBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::example::DatabaseBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::example::File& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::example::FileServerBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::example::ImageProcessorBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::example::InputOutputError& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::example::LidarInfo& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::example::LidarPointCloud& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::example::LidarProcessorBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
@@ -48,7 +90,10 @@ void read(TypeInput& in, ::example::transaction_type_e& value, const TypeCode* t
 
 void write(TypeOutput& out, const ::example::CameraSensorBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::example::DatabaseBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::example::File& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::example::FileServerBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::example::ImageProcessorBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::example::InputOutputError& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::example::LidarInfo& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::example::LidarPointCloud& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::example::LidarProcessorBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
@@ -61,7 +106,10 @@ void write(TypeOutput& out, const ::example::transaction_type_e& value, const Ty
 
 void read(std::istream& in, ::example::CameraSensorBase& value); ///< \private
 void read(std::istream& in, ::example::DatabaseBase& value); ///< \private
+void read(std::istream& in, ::example::File& value); ///< \private
+void read(std::istream& in, ::example::FileServerBase& value); ///< \private
 void read(std::istream& in, ::example::ImageProcessorBase& value); ///< \private
+void read(std::istream& in, ::example::InputOutputError& value); ///< \private
 void read(std::istream& in, ::example::LidarInfo& value); ///< \private
 void read(std::istream& in, ::example::LidarPointCloud& value); ///< \private
 void read(std::istream& in, ::example::LidarProcessorBase& value); ///< \private
@@ -74,7 +122,10 @@ void read(std::istream& in, ::example::transaction_type_e& value); ///< \private
 
 void write(std::ostream& out, const ::example::CameraSensorBase& value); ///< \private
 void write(std::ostream& out, const ::example::DatabaseBase& value); ///< \private
+void write(std::ostream& out, const ::example::File& value); ///< \private
+void write(std::ostream& out, const ::example::FileServerBase& value); ///< \private
 void write(std::ostream& out, const ::example::ImageProcessorBase& value); ///< \private
+void write(std::ostream& out, const ::example::InputOutputError& value); ///< \private
 void write(std::ostream& out, const ::example::LidarInfo& value); ///< \private
 void write(std::ostream& out, const ::example::LidarPointCloud& value); ///< \private
 void write(std::ostream& out, const ::example::LidarProcessorBase& value); ///< \private
@@ -87,7 +138,10 @@ void write(std::ostream& out, const ::example::transaction_type_e& value); ///< 
 
 void accept(Visitor& visitor, const ::example::CameraSensorBase& value); ///< \private
 void accept(Visitor& visitor, const ::example::DatabaseBase& value); ///< \private
+void accept(Visitor& visitor, const ::example::File& value); ///< \private
+void accept(Visitor& visitor, const ::example::FileServerBase& value); ///< \private
 void accept(Visitor& visitor, const ::example::ImageProcessorBase& value); ///< \private
+void accept(Visitor& visitor, const ::example::InputOutputError& value); ///< \private
 void accept(Visitor& visitor, const ::example::LidarInfo& value); ///< \private
 void accept(Visitor& visitor, const ::example::LidarPointCloud& value); ///< \private
 void accept(Visitor& visitor, const ::example::LidarProcessorBase& value); ///< \private
@@ -146,6 +200,52 @@ struct type<::example::DatabaseBase> {
 
 /// \private
 template<>
+struct type<::example::File> {
+	void read(TypeInput& in, ::example::File& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::example::File& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::example::File& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::example::File& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::example::File& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::example::FileServerBase> {
+	void read(TypeInput& in, ::example::FileServerBase& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::example::FileServerBase& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::example::FileServerBase& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::example::FileServerBase& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::example::FileServerBase& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
 struct type<::example::ImageProcessorBase> {
 	void read(TypeInput& in, ::example::ImageProcessorBase& value, const TypeCode* type_code, const uint16_t* code) {
 		vnx::read(in, value, type_code, code);
@@ -160,6 +260,29 @@ struct type<::example::ImageProcessorBase> {
 		vnx::write(out, value);
 	}
 	void accept(Visitor& visitor, const ::example::ImageProcessorBase& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::example::InputOutputError> {
+	void read(TypeInput& in, ::example::InputOutputError& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::example::InputOutputError& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::example::InputOutputError& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::example::InputOutputError& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::example::InputOutputError& value) {
 		vnx::accept(visitor, value);
 	}
 	void create_dynamic_code(std::vector<uint16_t>& code) {

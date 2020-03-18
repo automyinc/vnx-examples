@@ -109,6 +109,7 @@ std::shared_ptr<vnx::TypeCode> transaction_type_e::create_type_code() {
 	type_code->code_hash = vnx::Hash64(0x9622e85dd771acb1ull);
 	type_code->is_enum = true;
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<vnx::Struct<transaction_type_e>>(); };
+	type_code->methods.resize(0);
 	type_code->fields.resize(1);
 	{
 		vnx::TypeField& field = type_code->fields[0];
@@ -157,7 +158,8 @@ void read(TypeInput& in, ::example::transaction_type_e& value, const TypeCode* t
 
 void write(TypeOutput& out, const ::example::transaction_type_e& value, const TypeCode* type_code, const uint16_t* code) {
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::example::transaction_type_e>(out);
+		type_code = example::vnx_native_type_code_transaction_type_e;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::example::transaction_type_e>(out);
 	}
 	if(code && code[0] == CODE_STRUCT) {

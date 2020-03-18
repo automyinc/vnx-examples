@@ -23,7 +23,7 @@ void DatabaseClient::add_user(const ::std::string& name) {
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x2741180fbb8f23a1ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_add_user;
 	{
 		vnx::write(_out, name, _type_code, _type_code->fields[0].code.data());
 	}
@@ -41,7 +41,7 @@ void DatabaseClient::add_user_balance(const ::std::string& name, const ::vnx::fl
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x3d6e042d45e04326ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_add_user_balance;
 	{
 		char* const _buf = _out.write(8);
 		vnx::write_value(_buf + 0, value);
@@ -61,7 +61,7 @@ void DatabaseClient::add_user_balance_async(const ::std::string& name, const ::v
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x3e6f70937269a136ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_get_user;
 	{
 		vnx::write(_out, name, _type_code, _type_code->fields[0].code.data());
 	}
@@ -91,7 +91,7 @@ void DatabaseClient::add_user_balance_async(const ::std::string& name, const ::v
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xe625a8cfd51e9a9eull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_get_user_balance;
 	{
 		vnx::write(_out, name, _type_code, _type_code->fields[0].code.data());
 	}
@@ -126,7 +126,7 @@ void DatabaseClient::handle(const ::std::shared_ptr<const ::example::Transaction
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xa9a81442632b020eull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_handle_example_Transaction;
 	{
 		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
 	}
@@ -144,7 +144,7 @@ void DatabaseClient::subtract_user_balance(const ::std::string& name, const ::vn
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0xe58127da78610817ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_Database_subtract_user_balance;
 	{
 		char* const _buf = _out.write(8);
 		vnx::write_value(_buf + 0, value);

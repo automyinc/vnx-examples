@@ -50,8 +50,10 @@ protected:
 	virtual void handle(std::shared_ptr<const ::example::LidarPointCloud> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
 	virtual void handle(std::shared_ptr<const ::example::LidarPointCloud> _value) {}
 	
-	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) override;
-	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) override;
+	void vnx_handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) override;
+	std::shared_ptr<vnx::Value> vnx_call_switch(vnx::TypeInput& _in, const vnx::TypeCode* _call_type, const vnx::request_id_t& _request_id) override;
+	
+private:
 	
 };
 

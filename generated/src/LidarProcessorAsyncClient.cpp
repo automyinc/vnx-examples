@@ -23,7 +23,7 @@ uint64_t LidarProcessorAsyncClient::handle(const ::std::shared_ptr<const ::examp
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x3b1e2fc2a03761ceull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_LidarProcessor_handle_example_LidarInfo;
 	{
 		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
 	}
@@ -39,7 +39,7 @@ uint64_t LidarProcessorAsyncClient::handle(const ::std::shared_ptr<const ::examp
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x2998b50070ccccf6ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_LidarProcessor_handle_example_LidarPointCloud;
 	{
 		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
 	}
@@ -49,6 +49,17 @@ uint64_t LidarProcessorAsyncClient::handle(const ::std::shared_ptr<const ::examp
 	vnx_queue_handle_example_LidarPointCloud[_request_id] = _callback;
 	vnx_num_pending++;
 	return _request_id;
+}
+
+std::vector<uint64_t>LidarProcessorAsyncClient::vnx_get_pending_ids() const {
+	std::vector<uint64_t> _list;
+	for(const auto& entry : vnx_queue_handle_example_LidarInfo) {
+		_list.push_back(entry.first);
+	}
+	for(const auto& entry : vnx_queue_handle_example_LidarPointCloud) {
+		_list.push_back(entry.first);
+	}
+	return _list;
 }
 
 void LidarProcessorAsyncClient::vnx_purge_request(uint64_t _request_id) {
@@ -64,21 +75,23 @@ void LidarProcessorAsyncClient::vnx_callback_switch(uint64_t _request_id, std::s
 	if(_return_type->type_hash == vnx::Hash64(0x7967c878d16d870aull)) {
 		auto _iter = vnx_queue_handle_example_LidarInfo.find(_request_id);
 		if(_iter != vnx_queue_handle_example_LidarInfo.end()) {
-			if(_iter->second) {
-				_iter->second();
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_handle_example_LidarInfo.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback();
+			}
 		}
 	}
 	else if(_return_type->type_hash == vnx::Hash64(0x563c486fd84f7fa3ull)) {
 		auto _iter = vnx_queue_handle_example_LidarPointCloud.find(_request_id);
 		if(_iter != vnx_queue_handle_example_LidarPointCloud.end()) {
-			if(_iter->second) {
-				_iter->second();
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_handle_example_LidarPointCloud.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback();
+			}
 		}
 	}
 }

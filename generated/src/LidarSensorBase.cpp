@@ -9,6 +9,8 @@
 #include <vnx/Object.h>
 #include <vnx/Struct.h>
 #include <vnx/Config.h>
+#include <vnx/Binary.h>
+#include <vnx/NoSuchMethod.hxx>
 
 
 namespace example {
@@ -36,7 +38,7 @@ const char* LidarSensorBase::get_type_name() const {
 }
 
 void LidarSensorBase::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_LidarSensor;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, output);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, num_beams);
@@ -163,12 +165,14 @@ std::shared_ptr<vnx::TypeCode> LidarSensorBase::create_type_code() {
 	return type_code;
 }
 
-void LidarSensorBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
+void LidarSensorBase::vnx_handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
 	const uint64_t _type_hash = _sample->value->get_type_hash();
 }
 
-bool LidarSensorBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
-	return false;
+std::shared_ptr<vnx::Value> LidarSensorBase::vnx_call_switch(vnx::TypeInput& _in, const vnx::TypeCode* _call_type, const vnx::request_id_t& _request_id) {
+	auto _ex = vnx::NoSuchMethod::create();
+	_ex->method = _call_type->name;
+	return _ex;
 }
 
 
@@ -220,7 +224,8 @@ void read(TypeInput& in, ::example::LidarSensorBase& value, const TypeCode* type
 
 void write(TypeOutput& out, const ::example::LidarSensorBase& value, const TypeCode* type_code, const uint16_t* code) {
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::example::LidarSensorBase>(out);
+		type_code = example::vnx_native_type_code_LidarSensor;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::example::LidarSensorBase>(out);
 	}
 	if(code && code[0] == CODE_STRUCT) {

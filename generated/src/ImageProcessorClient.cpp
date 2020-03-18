@@ -23,7 +23,7 @@ void ImageProcessorClient::handle(const ::std::shared_ptr<const ::automy::basic:
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x5320177c92df4aa2ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_ImageProcessor_handle_automy_basic_ImageFrame8;
 	{
 		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
 	}

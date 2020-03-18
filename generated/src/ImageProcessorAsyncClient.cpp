@@ -23,7 +23,7 @@ uint64_t ImageProcessorAsyncClient::handle(const ::std::shared_ptr<const ::autom
 	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
 	vnx::BinaryOutputStream _stream_out(_argument_data.get());
 	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x5320177c92df4aa2ull));
+	const vnx::TypeCode* _type_code = example::vnx_native_type_code_ImageProcessor_handle_automy_basic_ImageFrame8;
 	{
 		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
 	}
@@ -33,6 +33,14 @@ uint64_t ImageProcessorAsyncClient::handle(const ::std::shared_ptr<const ::autom
 	vnx_queue_handle_automy_basic_ImageFrame8[_request_id] = _callback;
 	vnx_num_pending++;
 	return _request_id;
+}
+
+std::vector<uint64_t>ImageProcessorAsyncClient::vnx_get_pending_ids() const {
+	std::vector<uint64_t> _list;
+	for(const auto& entry : vnx_queue_handle_automy_basic_ImageFrame8) {
+		_list.push_back(entry.first);
+	}
+	return _list;
 }
 
 void ImageProcessorAsyncClient::vnx_purge_request(uint64_t _request_id) {
@@ -47,11 +55,12 @@ void ImageProcessorAsyncClient::vnx_callback_switch(uint64_t _request_id, std::s
 	if(_return_type->type_hash == vnx::Hash64(0x38d29c6677d6b067ull)) {
 		auto _iter = vnx_queue_handle_automy_basic_ImageFrame8.find(_request_id);
 		if(_iter != vnx_queue_handle_automy_basic_ImageFrame8.end()) {
-			if(_iter->second) {
-				_iter->second();
-			}
+			const auto _callback = std::move(_iter->second);
 			vnx_queue_handle_automy_basic_ImageFrame8.erase(_iter);
 			vnx_num_pending--;
+			if(_callback) {
+				_callback();
+			}
 		}
 	}
 }

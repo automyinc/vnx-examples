@@ -23,6 +23,8 @@ public:
 	
 	uint64_t handle(const ::std::shared_ptr<const ::example::LidarPointCloud>& sample, const std::function<void()>& _callback);
 	
+	std::vector<uint64_t> vnx_get_pending_ids() const override;
+	
 protected:
 	void vnx_purge_request(uint64_t _request_id) override;
 	

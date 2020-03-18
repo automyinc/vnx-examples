@@ -19,6 +19,11 @@ LidarSensorAsyncClient::LidarSensorAsyncClient(vnx::Hash64 service_addr)
 {
 }
 
+std::vector<uint64_t>LidarSensorAsyncClient::vnx_get_pending_ids() const {
+	std::vector<uint64_t> _list;
+	return _list;
+}
+
 void LidarSensorAsyncClient::vnx_purge_request(uint64_t _request_id) {
 }
 
