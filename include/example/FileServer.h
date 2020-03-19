@@ -64,12 +64,14 @@ protected:
 						const std::function<void(const std::shared_ptr<const File>&)>& callback,
 						const vnx::request_id_t& request_id) const override
 	{
-		std::lock_guard<std::mutex> lock(mutex);
 		auto request = std::make_shared<request_t>();
 		request->id = request_id;
 		request->file_name = file_name;
 		request->callback = callback;
-		work_queue.push(request);
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			work_queue.push(request);
+		}
 		condition.notify_one();
 		request_counter++;
 	}
