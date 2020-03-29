@@ -28,6 +28,7 @@ struct transaction_type_e {
 	
 	vnx::Hash64 get_type_hash() const;
 	const char* get_type_name() const;
+	const vnx::TypeCode* get_type_code() const;
 	
 	operator uint32_t() const { return value; }
 	transaction_type_e& operator=(uint32_t _value) { value = _value; return *this; }
@@ -49,8 +50,8 @@ struct transaction_type_e {
 	friend std::ostream& operator<<(std::ostream& _out, const transaction_type_e& _value);
 	friend std::istream& operator>>(std::istream& _in, transaction_type_e& _value);
 	
-	static const vnx::TypeCode* get_type_code();
-	static std::shared_ptr<vnx::TypeCode> create_type_code();
+	static const vnx::TypeCode* static_get_type_code();
+	static std::shared_ptr<vnx::TypeCode> static_create_type_code();
 	
 };
 

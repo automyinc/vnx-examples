@@ -34,6 +34,9 @@ vnx::Hash64 LidarProcessorBase::get_type_hash() const {
 const char* LidarProcessorBase::get_type_name() const {
 	return "example.LidarProcessor";
 }
+const vnx::TypeCode* LidarProcessorBase::get_type_code() const {
+	return example::vnx_native_type_code_LidarProcessor;
+}
 
 void LidarProcessorBase::accept(vnx::Visitor& _visitor) const {
 	const vnx::TypeCode* _type_code = example::vnx_native_type_code_LidarProcessor;
@@ -98,21 +101,21 @@ std::istream& operator>>(std::istream& _in, LidarProcessorBase& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* LidarProcessorBase::get_type_code() {
+const vnx::TypeCode* LidarProcessorBase::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x7df3e7fe5968fe76ull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> LidarProcessorBase::create_type_code() {
+std::shared_ptr<vnx::TypeCode> LidarProcessorBase::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarProcessor";
 	type_code->type_hash = vnx::Hash64(0x7df3e7fe5968fe76ull);
 	type_code->code_hash = vnx::Hash64(0xdb4e6a575ebb6d3bull);
 	type_code->depends.resize(1);
-	type_code->depends[0] = ::example::LidarInfo::get_type_code();
+	type_code->depends[0] = ::example::LidarInfo::static_get_type_code();
 	type_code->methods.resize(2);
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);

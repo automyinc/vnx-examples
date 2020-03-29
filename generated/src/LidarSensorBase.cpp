@@ -36,6 +36,9 @@ vnx::Hash64 LidarSensorBase::get_type_hash() const {
 const char* LidarSensorBase::get_type_name() const {
 	return "example.LidarSensor";
 }
+const vnx::TypeCode* LidarSensorBase::get_type_code() const {
+	return example::vnx_native_type_code_LidarSensor;
+}
 
 void LidarSensorBase::accept(vnx::Visitor& _visitor) const {
 	const vnx::TypeCode* _type_code = example::vnx_native_type_code_LidarSensor;
@@ -114,21 +117,21 @@ std::istream& operator>>(std::istream& _in, LidarSensorBase& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* LidarSensorBase::get_type_code() {
+const vnx::TypeCode* LidarSensorBase::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x3c7f512f5e85fe65ull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> LidarSensorBase::create_type_code() {
+std::shared_ptr<vnx::TypeCode> LidarSensorBase::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarSensor";
 	type_code->type_hash = vnx::Hash64(0x3c7f512f5e85fe65ull);
 	type_code->code_hash = vnx::Hash64(0x2727daadb7271643ull);
 	type_code->depends.resize(1);
-	type_code->depends[0] = ::example::LidarInfo::get_type_code();
+	type_code->depends[0] = ::example::LidarInfo::static_get_type_code();
 	type_code->methods.resize(0);
 	type_code->fields.resize(5);
 	{

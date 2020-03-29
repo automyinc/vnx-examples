@@ -23,6 +23,9 @@ vnx::Hash64 LidarInfo::get_type_hash() const {
 const char* LidarInfo::get_type_name() const {
 	return "example.LidarInfo";
 }
+const vnx::TypeCode* LidarInfo::get_type_code() const {
+	return example::vnx_native_type_code_LidarInfo;
+}
 
 std::shared_ptr<LidarInfo> LidarInfo::create() {
 	return std::make_shared<LidarInfo>();
@@ -110,22 +113,22 @@ std::istream& operator>>(std::istream& _in, LidarInfo& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* LidarInfo::get_type_code() {
+const vnx::TypeCode* LidarInfo::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x8d11d39b0f5a7b5cull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> LidarInfo::create_type_code() {
+std::shared_ptr<vnx::TypeCode> LidarInfo::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarInfo";
 	type_code->type_hash = vnx::Hash64(0x8d11d39b0f5a7b5cull);
 	type_code->code_hash = vnx::Hash64(0x30fbab18bef21c86ull);
 	type_code->is_class = true;
 	type_code->parents.resize(1);
-	type_code->parents[0] = ::automy::basic::Transform3D::get_type_code();
+	type_code->parents[0] = ::automy::basic::Transform3D::static_get_type_code();
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<LidarInfo>(); };
 	type_code->methods.resize(1);
 	{

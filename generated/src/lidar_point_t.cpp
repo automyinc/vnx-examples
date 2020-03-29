@@ -23,6 +23,9 @@ vnx::Hash64 lidar_point_t::get_type_hash() const {
 const char* lidar_point_t::get_type_name() const {
 	return "example.lidar_point_t";
 }
+const vnx::TypeCode* lidar_point_t::get_type_code() const {
+	return example::vnx_native_type_code_lidar_point_t;
+}
 
 std::shared_ptr<lidar_point_t> lidar_point_t::create() {
 	return std::make_shared<lidar_point_t>();
@@ -110,15 +113,15 @@ std::istream& operator>>(std::istream& _in, lidar_point_t& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* lidar_point_t::get_type_code() {
+const vnx::TypeCode* lidar_point_t::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x23a1b484366dcb3dull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> lidar_point_t::create_type_code() {
+std::shared_ptr<vnx::TypeCode> lidar_point_t::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.lidar_point_t";
 	type_code->type_hash = vnx::Hash64(0x23a1b484366dcb3dull);

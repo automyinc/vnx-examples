@@ -25,20 +25,20 @@ namespace example {
 std::shared_ptr<vnx::Topic> transactions = vnx::get_topic("example", "transactions");
 
 static void register_all_types() {
-	vnx::register_type_code(example::CameraSensorBase::create_type_code());
-	vnx::register_type_code(example::DatabaseBase::create_type_code());
-	vnx::register_type_code(example::File::create_type_code());
-	vnx::register_type_code(example::FileServerBase::create_type_code());
-	vnx::register_type_code(example::ImageProcessorBase::create_type_code());
-	vnx::register_type_code(example::InputOutputError::create_type_code());
-	vnx::register_type_code(example::LidarInfo::create_type_code());
-	vnx::register_type_code(example::LidarPointCloud::create_type_code());
-	vnx::register_type_code(example::LidarProcessorBase::create_type_code());
-	vnx::register_type_code(example::LidarSensorBase::create_type_code());
-	vnx::register_type_code(example::Transaction::create_type_code());
-	vnx::register_type_code(example::User::create_type_code());
-	vnx::register_type_code(example::lidar_point_t::create_type_code());
-	vnx::register_type_code(example::transaction_type_e::create_type_code());
+	vnx::register_type_code(example::CameraSensorBase::static_create_type_code());
+	vnx::register_type_code(example::DatabaseBase::static_create_type_code());
+	vnx::register_type_code(example::File::static_create_type_code());
+	vnx::register_type_code(example::FileServerBase::static_create_type_code());
+	vnx::register_type_code(example::ImageProcessorBase::static_create_type_code());
+	vnx::register_type_code(example::InputOutputError::static_create_type_code());
+	vnx::register_type_code(example::LidarInfo::static_create_type_code());
+	vnx::register_type_code(example::LidarPointCloud::static_create_type_code());
+	vnx::register_type_code(example::LidarProcessorBase::static_create_type_code());
+	vnx::register_type_code(example::LidarSensorBase::static_create_type_code());
+	vnx::register_type_code(example::Transaction::static_create_type_code());
+	vnx::register_type_code(example::User::static_create_type_code());
+	vnx::register_type_code(example::lidar_point_t::static_create_type_code());
+	vnx::register_type_code(example::transaction_type_e::static_create_type_code());
 }
 
 static struct vnx_static_init {

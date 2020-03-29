@@ -23,6 +23,9 @@ vnx::Hash64 User::get_type_hash() const {
 const char* User::get_type_name() const {
 	return "example.User";
 }
+const vnx::TypeCode* User::get_type_code() const {
+	return example::vnx_native_type_code_User;
+}
 
 std::shared_ptr<User> User::create() {
 	return std::make_shared<User>();
@@ -96,15 +99,15 @@ std::istream& operator>>(std::istream& _in, User& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* User::get_type_code() {
+const vnx::TypeCode* User::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x29f409d7512427eaull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> User::create_type_code() {
+std::shared_ptr<vnx::TypeCode> User::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.User";
 	type_code->type_hash = vnx::Hash64(0x29f409d7512427eaull);

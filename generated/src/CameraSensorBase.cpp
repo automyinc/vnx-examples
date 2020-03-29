@@ -35,6 +35,9 @@ vnx::Hash64 CameraSensorBase::get_type_hash() const {
 const char* CameraSensorBase::get_type_name() const {
 	return "example.CameraSensor";
 }
+const vnx::TypeCode* CameraSensorBase::get_type_code() const {
+	return example::vnx_native_type_code_CameraSensor;
+}
 
 void CameraSensorBase::accept(vnx::Visitor& _visitor) const {
 	const vnx::TypeCode* _type_code = example::vnx_native_type_code_CameraSensor;
@@ -106,15 +109,15 @@ std::istream& operator>>(std::istream& _in, CameraSensorBase& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* CameraSensorBase::get_type_code() {
+const vnx::TypeCode* CameraSensorBase::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x2201bbd3b25391ebull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> CameraSensorBase::create_type_code() {
+std::shared_ptr<vnx::TypeCode> CameraSensorBase::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.CameraSensor";
 	type_code->type_hash = vnx::Hash64(0x2201bbd3b25391ebull);

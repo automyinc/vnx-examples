@@ -33,6 +33,9 @@ vnx::Hash64 FileServerBase::get_type_hash() const {
 const char* FileServerBase::get_type_name() const {
 	return "example.FileServer";
 }
+const vnx::TypeCode* FileServerBase::get_type_code() const {
+	return example::vnx_native_type_code_FileServer;
+}
 
 void FileServerBase::accept(vnx::Visitor& _visitor) const {
 	const vnx::TypeCode* _type_code = example::vnx_native_type_code_FileServer;
@@ -90,15 +93,15 @@ std::istream& operator>>(std::istream& _in, FileServerBase& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* FileServerBase::get_type_code() {
+const vnx::TypeCode* FileServerBase::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x7361123445d5e0eull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> FileServerBase::create_type_code() {
+std::shared_ptr<vnx::TypeCode> FileServerBase::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.FileServer";
 	type_code->type_hash = vnx::Hash64(0x7361123445d5e0eull);

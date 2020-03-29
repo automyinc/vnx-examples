@@ -23,6 +23,9 @@ vnx::Hash64 Transaction::get_type_hash() const {
 const char* Transaction::get_type_name() const {
 	return "example.Transaction";
 }
+const vnx::TypeCode* Transaction::get_type_code() const {
+	return example::vnx_native_type_code_Transaction;
+}
 
 std::shared_ptr<Transaction> Transaction::create() {
 	return std::make_shared<Transaction>();
@@ -110,15 +113,15 @@ std::istream& operator>>(std::istream& _in, Transaction& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* Transaction::get_type_code() {
+const vnx::TypeCode* Transaction::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0xcac4a4d10cff0323ull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> Transaction::create_type_code() {
+std::shared_ptr<vnx::TypeCode> Transaction::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.Transaction";
 	type_code->type_hash = vnx::Hash64(0xcac4a4d10cff0323ull);
@@ -126,7 +129,7 @@ std::shared_ptr<vnx::TypeCode> Transaction::create_type_code() {
 	type_code->is_class = true;
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<Transaction>(); };
 	type_code->depends.resize(1);
-	type_code->depends[0] = ::example::transaction_type_e::get_type_code();
+	type_code->depends[0] = ::example::transaction_type_e::static_get_type_code();
 	type_code->methods.resize(0);
 	type_code->fields.resize(4);
 	{

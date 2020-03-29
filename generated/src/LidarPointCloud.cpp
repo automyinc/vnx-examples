@@ -23,6 +23,9 @@ vnx::Hash64 LidarPointCloud::get_type_hash() const {
 const char* LidarPointCloud::get_type_name() const {
 	return "example.LidarPointCloud";
 }
+const vnx::TypeCode* LidarPointCloud::get_type_code() const {
+	return example::vnx_native_type_code_LidarPointCloud;
+}
 
 std::shared_ptr<LidarPointCloud> LidarPointCloud::create() {
 	return std::make_shared<LidarPointCloud>();
@@ -103,15 +106,15 @@ std::istream& operator>>(std::istream& _in, LidarPointCloud& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* LidarPointCloud::get_type_code() {
+const vnx::TypeCode* LidarPointCloud::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x245fc412fc39f4acull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> LidarPointCloud::create_type_code() {
+std::shared_ptr<vnx::TypeCode> LidarPointCloud::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.LidarPointCloud";
 	type_code->type_hash = vnx::Hash64(0x245fc412fc39f4acull);
@@ -119,7 +122,7 @@ std::shared_ptr<vnx::TypeCode> LidarPointCloud::create_type_code() {
 	type_code->is_class = true;
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<LidarPointCloud>(); };
 	type_code->depends.resize(1);
-	type_code->depends[0] = ::example::lidar_point_t::get_type_code();
+	type_code->depends[0] = ::example::lidar_point_t::static_get_type_code();
 	type_code->methods.resize(0);
 	type_code->fields.resize(3);
 	{

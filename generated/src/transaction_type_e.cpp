@@ -23,6 +23,9 @@ vnx::Hash64 transaction_type_e::get_type_hash() const {
 const char* transaction_type_e::get_type_name() const {
 	return "example.transaction_type_e";
 }
+const vnx::TypeCode* transaction_type_e::get_type_code() const {
+	return example::vnx_native_type_code_transaction_type_e;
+}
 
 std::shared_ptr<transaction_type_e> transaction_type_e::create() {
 	return std::make_shared<transaction_type_e>();
@@ -94,15 +97,15 @@ std::istream& operator>>(std::istream& _in, transaction_type_e& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* transaction_type_e::get_type_code() {
+const vnx::TypeCode* transaction_type_e::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0xcbdf8f90f7bbb940ull));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> transaction_type_e::create_type_code() {
+std::shared_ptr<vnx::TypeCode> transaction_type_e::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.transaction_type_e";
 	type_code->type_hash = vnx::Hash64(0xcbdf8f90f7bbb940ull);

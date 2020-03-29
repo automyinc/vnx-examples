@@ -14,7 +14,7 @@ namespace example {
 
 
 const vnx::Hash64 InputOutputError::VNX_TYPE_HASH(0x1443a327225d003full);
-const vnx::Hash64 InputOutputError::VNX_CODE_HASH(0xc9617ebfc314503ull);
+const vnx::Hash64 InputOutputError::VNX_CODE_HASH(0xffa00a1cdfb78693ull);
 
 vnx::Hash64 InputOutputError::get_type_hash() const {
 	return VNX_TYPE_HASH;
@@ -22,6 +22,9 @@ vnx::Hash64 InputOutputError::get_type_hash() const {
 
 const char* InputOutputError::get_type_name() const {
 	return "example.InputOutputError";
+}
+const vnx::TypeCode* InputOutputError::get_type_code() const {
+	return example::vnx_native_type_code_InputOutputError;
 }
 
 std::shared_ptr<InputOutputError> InputOutputError::create() {
@@ -89,22 +92,22 @@ std::istream& operator>>(std::istream& _in, InputOutputError& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* InputOutputError::get_type_code() {
+const vnx::TypeCode* InputOutputError::static_get_type_code() {
 	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x1443a327225d003full));
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> InputOutputError::create_type_code() {
+std::shared_ptr<vnx::TypeCode> InputOutputError::static_create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "example.InputOutputError";
 	type_code->type_hash = vnx::Hash64(0x1443a327225d003full);
-	type_code->code_hash = vnx::Hash64(0xc9617ebfc314503ull);
+	type_code->code_hash = vnx::Hash64(0xffa00a1cdfb78693ull);
 	type_code->is_class = true;
 	type_code->parents.resize(1);
-	type_code->parents[0] = ::vnx::Exception::get_type_code();
+	type_code->parents[0] = ::vnx::Exception::static_get_type_code();
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<InputOutputError>(); };
 	type_code->methods.resize(0);
 	type_code->fields.resize(1);

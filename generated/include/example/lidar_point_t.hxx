@@ -24,6 +24,7 @@ struct lidar_point_t {
 	
 	vnx::Hash64 get_type_hash() const;
 	const char* get_type_name() const;
+	const vnx::TypeCode* get_type_code() const;
 	
 	static std::shared_ptr<lidar_point_t> create();
 	std::shared_ptr<lidar_point_t> clone() const;
@@ -42,8 +43,8 @@ struct lidar_point_t {
 	friend std::ostream& operator<<(std::ostream& _out, const lidar_point_t& _value);
 	friend std::istream& operator>>(std::istream& _in, lidar_point_t& _value);
 	
-	static const vnx::TypeCode* get_type_code();
-	static std::shared_ptr<vnx::TypeCode> create_type_code();
+	static const vnx::TypeCode* static_get_type_code();
+	static std::shared_ptr<vnx::TypeCode> static_create_type_code();
 	
 };
 
